@@ -1,0 +1,14 @@
+name: numblsavefig
+description: "Save a MATLAB figure to numbl's HDF5 figure format (numbl figure HDF5 layout v1)."
+version: "1.0.0"
+license: "Apache-2.0"
+homepage: "https://github.com/mip-org/mip-labs/tree/main/packages/numblsavefig/1.0.0"
+repository: "https://github.com/mip-org/mip-labs"
+dependencies: []
+
+paths:
+  - path: "."
+
+builds:
+  - architectures: [any]
+    test_script: test_numblsavefig.m
