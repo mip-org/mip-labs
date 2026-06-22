@@ -5,4 +5,4 @@
 # version, and it must equal source.branch.
 source:
   git: "https://github.com/flatironinstitute/fmm2d"
-  branch: "master"
+  branch: "main"
