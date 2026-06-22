@@ -38,7 +38,8 @@ See `mip-org/mip_channel_tools/adding_a_package.md` for the full package recipe.
 
 - Record every notable change in `CHANGELOG.md`. Keep entries brief.
 - Supported channel architectures: `any`, `linux_x86_64`, `macos_arm64`,
-  `windows_x86_64`.
+  `windows_x86_64`, `numbl_wasm` (a portable `.wasm` built with emcc; for
+  packages whose C is transpiled from Fortran at build time, see fmm2d).
 - Build requests are submitted via issues (title starts with `build`); each
   body line is `<name>@<release> <architecture>`. See `README.md` for details.
 - Channel → repo mapping: channel `mip-org/labs` is served from this repo

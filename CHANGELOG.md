@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-22
+
+- Added `fmm2d` (`main`): MATLAB MEX (linux/macos/windows, built from the
+  upstream Fortran) plus a `numbl_wasm` build. The WASM build transpiles the
+  Fortran to C with fort2c at build time (`matlab/numbl/build_wasm.sh`), so its
+  `source.yaml` points at upstream `flatironinstitute/fmm2d` rather than the
+  `fmm2d_c_translation` fork.
+- Added `numbl_wasm` to the channel's manually dispatchable architectures.
+
 ## 2026-06-19
 
 - Created the `mip-org/labs` channel.
