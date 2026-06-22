@@ -116,17 +116,18 @@ OBJS+=("$SHIM_OBJ")
 # any wasm runtime can instantiate (numbl runs it under its own loader, not
 # emscripten's JS shim).
 #
-# STACK_SIZE bump: bh2dterms (called from bhfmm2d) declares two fcomplex[2001]
-# locals on the stack — 64 KB, which overflows emscripten's default 64 KB wasm
-# stack and traps as OOB. Give the wasm stack 2 MB so all of fmm2d's stack work
-# buffers fit.
+# STACK_SIZE: the Helmholtz path nests deep enough (hfmm2dmain -> term/eval
+# routines, several with multi-kilobyte fcomplex stack locals) to overflow a
+# small wasm shadow stack and trap as OOB; the Laplace-only path (cfmm2d) does
+# not. 32 MB clears the whole fmm2d suite (cauchy/helmholtz/laplace). emscripten's
+# default is 64 KB; native builds get the OS default (~8 MB) and never hit this.
 echo "=== Linking fmm2d.wasm ==="
 em++ "${OBJS[@]}" \
   -O3 \
   -msimd128 \
   -s STANDALONE_WASM \
   -s SUPPORT_LONGJMP=wasm \
-  -s STACK_SIZE=2097152 \
+  -s STACK_SIZE=33554432 \
   --no-entry \
   -s TOTAL_MEMORY=67108864 \
   -s ALLOW_MEMORY_GROWTH=1 \
