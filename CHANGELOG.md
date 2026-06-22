@@ -2,6 +2,9 @@
 
 ## 2026-06-22
 
+- Build-request issues opened by an admin (write+ on the repo) now dispatch
+  automatically — no `approve` comment needed. README updated.
+
 - Added `fmm2d` (`main`): MATLAB MEX (linux/macos/windows, built from the
   upstream Fortran) plus a `numbl_wasm` build. The WASM build transpiles the
   Fortran to C with fort2c at build time (`matlab/numbl/build_wasm.sh`), so its
