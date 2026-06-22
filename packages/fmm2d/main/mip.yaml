@@ -35,3 +35,11 @@ builds:
   - architectures: [numbl_wasm]
     compile_script: compile_numbl_wasm.m
     test_script: test_fmm2d.m
+    setup:
+      # The WASM build transpiles the Fortran to C with fort2c; build_wasm.sh
+      # invokes the `fort2c` console script. emcc is provided by the channel
+      # workflow (the generic numbl_wasm toolchain); fort2c is this package's
+      # own build dependency, so it is installed here. numbl_wasm builds on a
+      # Linux runner.
+      linux:
+        - "python -m pip install git+https://github.com/magland/fort2c"
