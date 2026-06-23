@@ -1,0 +1,22 @@
+name: threadedmex
+description: "A trivial OpenMP-parallel C MEX (y = x + 1 across threads); a Windows-only test fixture for MEX file-locking when a thread pool pins the DLL."
+version: "1.0.0"
+license: "Apache-2.0"
+homepage: "https://github.com/mip-org/mip-labs/tree/main/packages/threadedmex/1.0.0"
+repository: "https://github.com/mip-org/mip-labs"
+dependencies: []
+
+# Only matlab/ goes on the path: the compiled threadedmex.<ext> that compile.m
+# stages there. Build scripts stay at the package root, off the path.
+paths:
+  - path: "matlab"
+
+builds:
+  # Windows only: the file-locking problem under investigation is a Windows
+  # phenomenon (a loaded .so deletes fine on Linux/macOS). The OpenMP worker is
+  # compiled directly with `gcc -fopenmp` for flag control, then mex-linked with
+  # -lgomp; the channel's MinGW links -static, so libgomp is baked into the
+  # .mexw64 and its persistent worker pool pins the module after `clear`.
+  - architectures: [windows_x86_64]
+    compile_script: compile.m
+    test_script: test_threadedmex.m

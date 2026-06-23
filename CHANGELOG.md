@@ -2,6 +2,11 @@
 
 ## 2026-06-23
 
+- Added `threadedmex` (`1.0.0`, in-repo, windows_x86_64 only): the threaded
+  counterpart of `simplemex` — a trivial OpenMP-parallel C MEX (`y = x + 1`
+  across threads). A test fixture to confirm that a thread-pool MEX stays
+  file-locked even after `clear` (libgomp baked in via MinGW `-static`).
+
 - Added `simplemex` (`1.0.0`, in-repo): a trivial single-threaded C MEX
   (`y = x + 1`) used as a test fixture for mip's package lifecycle and Windows
   MEX file-locking behavior. Plain `mex()` across linux/macos/windows.
