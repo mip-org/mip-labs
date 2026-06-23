@@ -45,8 +45,7 @@ args = {'-largeArrayDims', gateway, obj};
 if ~isempty(gdir)
     args{end+1} = ['-L' gdir];
 end
-args{end+1} = '-lgomp';
-args{end+1} = '-lpthread';   % winpthreads; libgomp (posix MinGW) depends on it
+args{end+1} = '-lgomp';   % MinGW's gcc driver auto-links libwinpthread for libgomp
 args{end+1} = '-output';
 args{end+1} = fullfile('matlab', 'threadedmex');
 mex(args{:});
