@@ -62,9 +62,10 @@ elseif ispc
     defs{end+1} = '-DTREEWEAVE_ARCH=x86-64';          % MSVC ignores -march; SSE2 baseline
     genArg = ' -G "Visual Studio 17 2022" -A x64';
     % winflexbison3 (installed via setup:) ships win_bison/win_flex rather than
-    % bison/flex; point CMake's FindBISON/FindFLEX at them.
-    defs{end+1} = '-DBISON_EXECUTABLE=win_bison';
-    defs{end+1} = '-DFLEX_EXECUTABLE=win_flex';
+    % bison/flex. Point CMake's FindBISON/FindFLEX at their ABSOLUTE paths: a bare
+    % name in -DBISON_EXECUTABLE is resolved relative to the source dir, not PATH.
+    defs{end+1} = sprintf('-DBISON_EXECUTABLE=%s', find_windows_tool('win_bison'));
+    defs{end+1} = sprintf('-DFLEX_EXECUTABLE=%s', find_windows_tool('win_flex'));
 else
     defs{end+1} = '-DTREEWEAVE_ARCH=x86-64';          % portable x86-64 baseline + runtime dispatch
     % The build container's default gcc-toolset-10 predates C++20; switch to a
@@ -192,6 +193,25 @@ for i = 1:numel(lines)
             'patchelf remove libMatlabEngine.so');
     end
 end
+end
+
+
+function p = find_windows_tool(name)
+% Absolute path to a winflexbison3 tool (win_bison/win_flex), forward-slashed
+% for CMake. Prefer PATH (`where`); fall back to chocolatey's install dir.
+[st, out] = system(['where ' name]);
+if st == 0 && ~isempty(strtrim(out))
+    lines = splitlines(strtrim(out));
+    p = strtrim(lines{1});
+else
+    p = fullfile(getenv('ProgramData'), 'chocolatey', 'lib', 'winflexbison3', ...
+        'tools', [name '.exe']);
+    if ~exist(p, 'file')
+        error('treeweave:compile', ...
+            '%s.exe not found on PATH or in chocolatey (winflexbison3 installed?)', name);
+    end
+end
+p = strrep(p, '\', '/');
 end
 
 
