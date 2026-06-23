@@ -34,11 +34,13 @@ builds:
       macos_arm64: clang
       windows_x86_64: msvc
     setup:
-      # ubi8 container ships neither bison/flex (mwrap's parser/lexer generator)
-      # nor a C++20 gcc; install both. gcc-toolset-13 keeps the glibc-2.28 floor
-      # (only the compiler changes) and compile.m static-links its libstdc++.
+      # ubi8 container ships neither cmake, bison/flex (mwrap's parser/lexer
+      # generator, which invokes m4), nor a C++20 gcc; install all. el8's cmake
+      # (3.26) is within treeweave's 3.25..3.31 range. gcc-toolset-13 keeps the
+      # glibc-2.28 floor (only the compiler changes) and compile.m static-links
+      # its libstdc++.
       linux:
-        - "dnf install -y bison flex gcc-toolset-13"
+        - "dnf install -y cmake bison flex m4 gcc-toolset-13"
       # macOS runners ship bison + flex; clang is C++20-capable. Nothing to add.
       macos: []
       # Windows: winflexbison3 provides win_bison/win_flex, which CMake's
