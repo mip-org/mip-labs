@@ -10,6 +10,9 @@
   and MSVC on Windows (provisioned via per-OS `setup:`; bison/flex for mwrap).
   `numbl_wasm` deferred (the MATLAB API's function-handle callback trampoline
   has no WASM→runtime path under numbl's stateless builtin model).
+  `windows_x86_64` dropped: the mwrap generator does not link under MSVC
+  (LNK2001 on its flex/bison globals) and the channel's MinGW 8.1 predates
+  C++20. linux_x86_64 + macos_arm64 ship.
 
 ## 2026-06-22
 

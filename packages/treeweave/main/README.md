@@ -53,7 +53,6 @@ into `bindings/matlab`.
 | --- | --- | --- |
 | `linux_x86_64` | gcc-toolset ≥ 11 | C++20 needs gcc ≥ 11; the channel's default gcc-toolset-10 is too old, so a newer toolset is installed at build time. |
 | `macos_arm64` | Apple clang | `apple-m1` baseline (Apple Silicon). |
-| `windows_x86_64` | MSVC (VS 2022) | MinGW 8.1 predates C++20, so MSVC is used. |
 
 **Static linking.** The MEX statically links the treeweave C ABI and (on
 Linux/GNU) `-static-libstdc++ -static-libgcc`, so each binary is self-contained:
@@ -64,6 +63,13 @@ on the end-user CPU.
 
 ### Not shipped
 
+- **`windows_x86_64`.** The mwrap generator (fetched by treeweave's CMake to
+  produce the MEX gateway) fails to link under MSVC — its flex/bison globals
+  come back as `LNK2001` unresolved externals (they link fine under GCC/Clang,
+  so Linux and macOS are unaffected). The channel's MinGW (8.1) predates C++20,
+  so it is not an alternative. This is an upstream mwrap/MSVC limitation;
+  treeweave's own release pipeline likewise treats its Windows MEX as
+  best-effort (`continue-on-error`).
 - **`numbl_wasm`.** Deferred. treeweave's API passes a MATLAB `function_handle`
   into the C `fit` as a callback that is invoked many times. numbl's WASM
   builtin model is a stateless one-way dispatch with no WASM→runtime callback

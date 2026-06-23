@@ -17,22 +17,26 @@ extra_paths:
     - path: "bindings/matlab/examples"
 
 builds:
-  # One CMake-driven MEX build across all three native arches. The C ABI does
-  # runtime ISA dispatch (TREEWEAVE_C_MULTIARCH), so a single portable baseline
-  # binary picks the best AVX/NEON kernel on the end-user CPU.
+  # One CMake-driven MEX build across the two supported native arches. The C ABI
+  # does runtime ISA dispatch (TREEWEAVE_C_MULTIARCH), so a single portable
+  # baseline binary picks the best AVX/NEON kernel on the end-user CPU.
   #
   # Compilers: treeweave is C++20, which the channel's default Linux toolchain
-  # (gcc-toolset-10) and Windows toolchain (MinGW 8.1) predate, so:
-  #   * macOS  -> clang (Apple's native toolchain; what upstream CI uses);
-  #   * Windows -> msvc (VS 2022 supports C++20; MinGW 8.1 does not);
-  #   * Linux  -> default gcc, but compile.m switches to a gcc-toolset >= 11
-  #              (installed via setup: below) for the actual compile.
-  - architectures: [linux_x86_64, macos_arm64, windows_x86_64]
+  # (gcc-toolset-10) predates, so:
+  #   * macOS -> clang (Apple's native toolchain; what upstream CI uses);
+  #   * Linux -> default gcc, but compile.m switches to a gcc-toolset >= 11
+  #             (installed via setup: below) for the actual compile.
+  #
+  # windows_x86_64 is NOT built: the mwrap generator (fetched by treeweave's
+  # CMake to produce the MEX gateway) fails to link under MSVC (LNK2001 on its
+  # flex/bison globals), and the channel's MinGW (8.1) predates C++20. See
+  # README.md. (compile.m retains its MSVC/winflexbison path for if/when mwrap is
+  # fixed upstream.)
+  - architectures: [linux_x86_64, macos_arm64]
     compile_script: compile.m
     test_script: test_treeweave.m
     compiler:
       macos_arm64: clang
-      windows_x86_64: msvc
     setup:
       # ubi8 container ships neither cmake, bison/flex (mwrap's parser/lexer
       # generator, which invokes m4), nor a C++20 gcc; install all. el8's cmake
@@ -41,10 +45,5 @@ builds:
       # its libstdc++.
       linux:
         - "dnf install -y cmake bison flex m4 gcc-toolset-13"
-      # macOS runners ship bison + flex; clang is C++20-capable. Nothing to add.
+      # macOS runners ship cmake + bison + flex; clang is C++20-capable.
       macos: []
-      # Windows: winflexbison3 provides win_bison/win_flex, which CMake's
-      # FindBISON/FindFLEX discover (compile.m points them at it). MSVC + MATLAB
-      # are provided by the runner image.
-      windows:
-        - "choco install -y --no-progress winflexbison3"
