@@ -1,0 +1,22 @@
+name: simplemex
+description: "A trivial single-threaded C MEX (y = x + 1) used to exercise mip's package lifecycle and Windows MEX file-locking behavior."
+version: "1.0.0"
+license: "Apache-2.0"
+homepage: "https://github.com/mip-org/mip-labs/tree/main/packages/simplemex/1.0.0"
+repository: "https://github.com/mip-org/mip-labs"
+dependencies: []
+
+# Only matlab/ goes on the path: the compiled simplemex.<ext> that compile.m
+# stages there. The build scripts (compile.m, test) stay at the package root,
+# off the path.
+paths:
+  - path: "matlab"
+
+builds:
+  # One plain-mex build across the three native arches. The C is portable and
+  # single-threaded; the framework's setup_mex_compilers points `mex` at the
+  # right toolchain per platform (MinGW + static mingw64.xml on Windows), so an
+  # unadorned mex() call suffices and no compile_windows.m is needed.
+  - architectures: [linux_x86_64, macos_arm64, windows_x86_64]
+    compile_script: compile.m
+    test_script: test_simplemex.m

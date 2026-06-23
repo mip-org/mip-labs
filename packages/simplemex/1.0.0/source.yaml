@@ -1,0 +1,7 @@
+# simplemex is hosted in-repo: its source (matlab/simplemex.c, compile.m, the
+# test, this README, mip.yaml) lives directly in this release directory rather
+# than being fetched from a separate upstream repo. With no `source:` key, the
+# prepare step's fetch is a no-op and the channel files are overlaid as-is.
+#
+# Do NOT add a `version:` field here — the release directory name (1.0.0) is
+# the version, and it must equal mip.yaml's `version:`.

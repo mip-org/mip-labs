@@ -2,6 +2,10 @@
 
 ## 2026-06-23
 
+- Added `simplemex` (`1.0.0`, in-repo): a trivial single-threaded C MEX
+  (`y = x + 1`) used as a test fixture for mip's package lifecycle and Windows
+  MEX file-locking behavior. Plain `mex()` across linux/macos/windows.
+
 - Added `treeweave` (`main`, branch-tracked): MATLAB MEX binding for the
   [treeweave](https://github.com/DiamonDinoia/treeweave) piecewise-polynomial
   approximator. `compile.m` drives treeweave's own CMake build (mwrap gateway +

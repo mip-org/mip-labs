@@ -16,6 +16,7 @@ mip load <name>
 | Package | Version | Description |
 | --- | --- | --- |
 | [numblsavefig](packages/numblsavefig/1.0.0) | 1.0.0 | Save a MATLAB figure to numbl's HDF5 figure format. |
+| [simplemex](packages/simplemex/1.0.0) | 1.0.0 | Trivial single-threaded C MEX (`y = x + 1`); a test fixture for mip's lifecycle and Windows MEX locking. |
 | [treeweave](packages/treeweave/main) | main | Piecewise-polynomial function approximator (MATLAB MEX binding). |
 
 ## How this channel builds
