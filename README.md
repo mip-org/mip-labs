@@ -16,6 +16,7 @@ mip load <name>
 | Package | Version | Description |
 | --- | --- | --- |
 | [numblsavefig](packages/numblsavefig/1.0.0) | 1.0.0 | Save a MATLAB figure to numbl's HDF5 figure format. |
+| [treeweave](packages/treeweave/main) | main | Piecewise-polynomial function approximator (MATLAB MEX binding). |
 
 ## How this channel builds
 

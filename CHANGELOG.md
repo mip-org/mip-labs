@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-06-23
+
+- Added `treeweave` (`main`, branch-tracked): MATLAB MEX binding for the
+  [treeweave](https://github.com/DiamonDinoia/treeweave) piecewise-polynomial
+  approximator. `compile.m` drives treeweave's own CMake build (mwrap gateway +
+  the treeweave_c_static C ABI) and stages the generated `tw_*.m` + the MEX into
+  `bindings/matlab`. C++20 forces a gcc-toolset ≥ 11 on Linux, clang on macOS,
+  and MSVC on Windows (provisioned via per-OS `setup:`; bison/flex for mwrap).
+  `numbl_wasm` deferred (the MATLAB API's function-handle callback trampoline
+  has no WASM→runtime path under numbl's stateless builtin model).
+
 ## 2026-06-22
 
 - Build-request issues opened by an admin (write+ on the repo) now dispatch

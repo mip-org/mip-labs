@@ -1,0 +1,48 @@
+name: treeweave
+description: "Piecewise-polynomial function approximator (adaptive tree of polynomial leaves) with a MATLAB MEX binding."
+version:
+license: "BSD-3-Clause"
+homepage: "https://github.com/DiamonDinoia/treeweave"
+repository: "https://github.com/DiamonDinoia/treeweave"
+dependencies: []
+
+# Only the MATLAB binding directory goes on the path: treeweave.m (the classdef)
+# plus the mwrap-generated tw_*.m stubs and the compiled treeweave_mex.<ext> that
+# compile.m stages here. The rest of the fetched repo is C++ build input only.
+paths:
+  - path: "bindings/matlab"
+
+extra_paths:
+  examples:
+    - path: "bindings/matlab/examples"
+
+builds:
+  # One CMake-driven MEX build across all three native arches. The C ABI does
+  # runtime ISA dispatch (TREEWEAVE_C_MULTIARCH), so a single portable baseline
+  # binary picks the best AVX/NEON kernel on the end-user CPU.
+  #
+  # Compilers: treeweave is C++20, which the channel's default Linux toolchain
+  # (gcc-toolset-10) and Windows toolchain (MinGW 8.1) predate, so:
+  #   * macOS  -> clang (Apple's native toolchain; what upstream CI uses);
+  #   * Windows -> msvc (VS 2022 supports C++20; MinGW 8.1 does not);
+  #   * Linux  -> default gcc, but compile.m switches to a gcc-toolset >= 11
+  #              (installed via setup: below) for the actual compile.
+  - architectures: [linux_x86_64, macos_arm64, windows_x86_64]
+    compile_script: compile.m
+    test_script: test_treeweave.m
+    compiler:
+      macos_arm64: clang
+      windows_x86_64: msvc
+    setup:
+      # ubi8 container ships neither bison/flex (mwrap's parser/lexer generator)
+      # nor a C++20 gcc; install both. gcc-toolset-13 keeps the glibc-2.28 floor
+      # (only the compiler changes) and compile.m static-links its libstdc++.
+      linux:
+        - "dnf install -y bison flex gcc-toolset-13"
+      # macOS runners ship bison + flex; clang is C++20-capable. Nothing to add.
+      macos: []
+      # Windows: winflexbison3 provides win_bison/win_flex, which CMake's
+      # FindBISON/FindFLEX discover (compile.m points them at it). MSVC + MATLAB
+      # are provided by the runner image.
+      windows:
+        - "choco install -y --no-progress winflexbison3"
