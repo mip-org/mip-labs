@@ -32,7 +32,7 @@ for the full API (`'sorted'`, `'transposed'`, `memory_usage`, `print_stats`, …
 After `mip load`, the `bindings/matlab` directory is on the path:
 
 - `treeweave.m` — the user-facing handle class.
-- `tw_*.m` — the mwrap-generated stubs.
+- `tw_*.m` — the mwrap stubs (checked in upstream, copied here at build time).
 - `treeweave_mex.<ext>` — the compiled MEX gateway.
 
 `mip load treeweave --with examples` additionally adds the upstream MATLAB
@@ -40,12 +40,14 @@ examples (`bindings/matlab/examples`).
 
 ## How it is built
 
-The binding is generated and compiled entirely by treeweave's own CMake build
-(there is no Makefile): CMake fetches the [mwrap](https://github.com/zgimbutas/mwrap)
-generator and the header-only deps (polyfit, POET, xsimd), generates the MEX
-gateway + `tw_*.m` from `bindings/matlab/treeweave.mw`, builds the C ABI static
-archive, and links the MEX. `compile.m` drives that build and stages the outputs
-into `bindings/matlab`.
+The binding is compiled entirely by treeweave's own CMake build (there is no
+Makefile): the mwrap gateway (`treeweave_mex_gen.cpp` + `tw_*.m`) is checked in
+upstream under `bindings/matlab/generated/` — mwrap's output is platform-
+independent, so it is generated once and committed, and no platform runs mwrap
+(or needs bison/flex). CMake fetches only the header-only deps (polyfit, POET,
+xsimd), compiles the checked-in gateway, builds the C ABI static archive, and
+links the MEX. `compile.m` drives that build and stages the outputs into
+`bindings/matlab`.
 
 ### Architecture matrix
 
@@ -53,23 +55,17 @@ into `bindings/matlab`.
 | --- | --- | --- |
 | `linux_x86_64` | gcc-toolset ≥ 11 | C++20 needs gcc ≥ 11; the channel's default gcc-toolset-10 is too old, so a newer toolset is installed at build time. |
 | `macos_arm64` | Apple clang | `apple-m1` baseline (Apple Silicon). |
+| `windows_x86_64` | MSVC (VS 2022) | C++20; SSE2 baseline, dispatch ladder up to AVX-512 via `/arch:` flags. |
 
 **Static linking.** The MEX statically links the treeweave C ABI and (on
 Linux/GNU) `-static-libstdc++ -static-libgcc`, so each binary is self-contained:
 the only dynamic dependencies are OS-provided libraries and MATLAB's own
 `libmex`/`libmx`. The C ABI does **runtime ISA dispatch** (`TREEWEAVE_C_MULTIARCH`),
 so a single portable baseline binary picks the best AVX/AVX-512 (or NEON) kernel
-on the end-user CPU.
+on the end-user CPU — on MSVC the ladder is SSE2/AVX/AVX2/AVX512 (`/arch:` flags).
 
 ### Not shipped
 
-- **`windows_x86_64`.** The mwrap generator (fetched by treeweave's CMake to
-  produce the MEX gateway) fails to link under MSVC — its flex/bison globals
-  come back as `LNK2001` unresolved externals (they link fine under GCC/Clang,
-  so Linux and macOS are unaffected). The channel's MinGW (8.1) predates C++20,
-  so it is not an alternative. This is an upstream mwrap/MSVC limitation;
-  treeweave's own release pipeline likewise treats its Windows MEX as
-  best-effort (`continue-on-error`).
 - **`numbl_wasm`.** Deferred. treeweave's API passes a MATLAB `function_handle`
   into the C `fit` as a callback that is invoked many times. numbl's WASM
   builtin model is a stateless one-way dispatch with no WASM→runtime callback

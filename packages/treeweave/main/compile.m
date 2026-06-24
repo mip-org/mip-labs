@@ -3,10 +3,9 @@ function compile()
 %
 % compile.m runs with cwd set to the package source root (the fetched treeweave
 % repo + overlaid channel files). It drives treeweave's OWN CMake build, which:
-%   1. fetches the mwrap generator (CPM) and the header-only deps (polyfit, POET,
-%      xsimd) via FetchContent,
-%   2. generates the MEX gateway (treeweave_mex_gen.cpp) + the tw_*.m stubs from
-%      bindings/matlab/treeweave.mw,
+%   1. fetches the header-only deps (polyfit, POET, xsimd) via FetchContent,
+%   2. compiles the checked-in mwrap gateway (bindings/matlab/generated/
+%      treeweave_mex_gen.cpp + tw_*.m) — no mwrap, no bison/flex,
 %   3. builds the C ABI static archive (treeweave_c_static), and
 %   4. links the MEX via matlab_add_mex (statically pulling in treeweave_c_static
 %      and, on GNU, -static-libstdc++/-static-libgcc).
@@ -15,8 +14,8 @@ function compile()
 % bindings/matlab next to treeweave.m, so the package's single `paths:` entry
 % (bindings/matlab) puts the whole binding on the MATLAB path.
 %
-% Build deps (cmake, bison, flex, a C++20 compiler) are provisioned by mip.yaml's
-% per-OS `setup:`; see the Linux toolchain handling below.
+% Build deps (cmake, a C++20 compiler) are provisioned by mip.yaml's per-OS
+% `setup:`; see the Linux toolchain handling below.
 
 fprintf('=== Compiling treeweave MATLAB MEX ===\n');
 
@@ -59,13 +58,11 @@ if ismac
     defs{end+1} = '-DTREEWEAVE_ARCH=apple-m1';        % oldest Apple-Silicon baseline
     defs{end+1} = '-DCMAKE_OSX_ARCHITECTURES=arm64';
 elseif ispc
-    defs{end+1} = '-DTREEWEAVE_ARCH=x86-64';          % MSVC ignores -march; SSE2 baseline
+    defs{end+1} = '-DTREEWEAVE_ARCH=x86-64';          % MSVC /arch: baseline (SSE2); multiarch fans out above it
     genArg = ' -G "Visual Studio 17 2022" -A x64';
-    % winflexbison3 (installed via setup:) ships win_bison/win_flex rather than
-    % bison/flex. Point CMake's FindBISON/FindFLEX at their ABSOLUTE paths: a bare
-    % name in -DBISON_EXECUTABLE is resolved relative to the source dir, not PATH.
-    defs{end+1} = sprintf('-DBISON_EXECUTABLE=%s', find_windows_tool('win_bison'));
-    defs{end+1} = sprintf('-DFLEX_EXECUTABLE=%s', find_windows_tool('win_flex'));
+    % No bison/flex/mwrap: the mwrap gateway is checked in upstream, so MSVC just
+    % compiles it. TREEWEAVE_C_MULTIARCH=ON (above) gives the SSE2/AVX/AVX2/AVX512
+    % runtime dispatch ladder via /arch: flags.
 else
     defs{end+1} = '-DTREEWEAVE_ARCH=x86-64';          % portable x86-64 baseline + runtime dispatch
     % The build container's default gcc-toolset-10 predates C++20; switch to a
@@ -193,25 +190,6 @@ for i = 1:numel(lines)
             'patchelf remove libMatlabEngine.so');
     end
 end
-end
-
-
-function p = find_windows_tool(name)
-% Absolute path to a winflexbison3 tool (win_bison/win_flex), forward-slashed
-% for CMake. Prefer PATH (`where`); fall back to chocolatey's install dir.
-[st, out] = system(['where ' name]);
-if st == 0 && ~isempty(strtrim(out))
-    lines = splitlines(strtrim(out));
-    p = strtrim(lines{1});
-else
-    p = fullfile(getenv('ProgramData'), 'chocolatey', 'lib', 'winflexbison3', ...
-        'tools', [name '.exe']);
-    if ~exist(p, 'file')
-        error('treeweave:compile', ...
-            '%s.exe not found on PATH or in chocolatey (winflexbison3 installed?)', name);
-    end
-end
-p = strrep(p, '\', '/');
 end
 
 

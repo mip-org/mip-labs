@@ -17,9 +17,10 @@ extra_paths:
     - path: "bindings/matlab/examples"
 
 builds:
-  # One CMake-driven MEX build across the two supported native arches. The C ABI
-  # does runtime ISA dispatch (TREEWEAVE_C_MULTIARCH), so a single portable
-  # baseline binary picks the best AVX/NEON kernel on the end-user CPU.
+  # One CMake-driven MEX build across all three supported arches. The C ABI does
+  # runtime ISA dispatch (TREEWEAVE_C_MULTIARCH), so a single portable baseline
+  # binary picks the best AVX/AVX-512/NEON kernel on the end-user CPU (on MSVC the
+  # ladder is SSE2/AVX/AVX2/AVX512 via /arch: flags).
   #
   # Compilers: treeweave is C++20, which the channel's default Linux toolchain
   # (gcc-toolset-10) predates, so:
@@ -27,23 +28,23 @@ builds:
   #   * Linux -> default gcc, but compile.m switches to a gcc-toolset >= 11
   #             (installed via setup: below) for the actual compile.
   #
-  # windows_x86_64 is NOT built: the mwrap generator (fetched by treeweave's
-  # CMake to produce the MEX gateway) fails to link under MSVC (LNK2001 on its
-  # flex/bison globals), and the channel's MinGW (8.1) predates C++20. See
-  # README.md. (compile.m retains its MSVC/winflexbison path for if/when mwrap is
-  # fixed upstream.)
-  - architectures: [linux_x86_64, macos_arm64]
+  # windows_x86_64 is built: treeweave's mwrap gateway is now checked in upstream,
+  # so no platform runs mwrap (the MSVC link of its flex/bison globals — the old
+  # Windows blocker — is gone). MSVC compiles the checked-in gateway + the C++20 C
+  # ABI directly; compile.m drives the VS2022 generator. On MSVC, multiarch fans
+  # out across SSE2/AVX/AVX2/AVX512 (/arch: flags) and dispatches at runtime.
+  - architectures: [linux_x86_64, macos_arm64, windows_x86_64]
     compile_script: compile.m
     test_script: test_treeweave.m
     compiler:
       macos_arm64: clang
     setup:
-      # ubi8 container ships neither cmake, bison/flex (mwrap's parser/lexer
-      # generator, which invokes m4), nor a C++20 gcc; install all. el8's cmake
-      # (3.26) is within treeweave's 3.25..3.31 range. gcc-toolset-13 keeps the
-      # glibc-2.28 floor (only the compiler changes) and compile.m static-links
-      # its libstdc++.
+      # ubi8 container ships neither cmake nor a C++20 gcc; install both. No
+      # bison/flex/m4 needed any more (mwrap is not run — the gateway is checked
+      # in upstream). el8's cmake (3.26) is within treeweave's 3.25..3.31 range.
+      # gcc-toolset-13 keeps the glibc-2.28 floor (only the compiler changes) and
+      # compile.m static-links its libstdc++.
       linux:
-        - "dnf install -y cmake bison flex m4 gcc-toolset-13"
-      # macOS runners ship cmake + bison + flex; clang is C++20-capable.
+        - "dnf install -y cmake gcc-toolset-13"
+      # macOS runners ship cmake; clang is C++20-capable.
       macos: []
