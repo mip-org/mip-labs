@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-25
+
+- `build-package` caller: forward `publish` and `source_repo` to the reusable
+  workflow. Test builds (`publish` unchecked) now publish the `.mhl` to a
+  rolling `_test-builds` prerelease with a direct download URL, instead of
+  leaving it only as a workflow artifact.
+
 ## 2026-06-23
 
 - Added `threadedmex` (`1.0.0`, in-repo, windows_x86_64 only): the threaded

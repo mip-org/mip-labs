@@ -1,5 +1,5 @@
 name: Build Package
-run-name: "${{ inputs.package_path }} (${{ inputs.architecture }})${{ inputs.force && ' [force]' || '' }}"
+run-name: "${{ inputs.package_path }} (${{ inputs.architecture }})${{ inputs.force && ' [force]' || '' }}${{ !inputs.publish && ' [test]' || '' }}${{ inputs.source_repo != '' && format(' [{0}]', inputs.source_repo) || '' }}"
 
 # Thin caller. The whole per-(package, architecture) build pipeline lives in the
 # reusable workflow in mip-org/mip_channel_tools; this file only defines the
@@ -27,6 +27,14 @@ on:
         description: 'Rebuild even if already published'
         type: boolean
         default: false
+      publish:
+        description: 'Publish into the channel (real release + reindex). Uncheck for a test build -> _test-builds prerelease.'
+        type: boolean
+        default: true
+      source_repo:
+        description: 'Foreign repo to take packages/ from (cross-channel test build); empty = this channel.'
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -40,4 +48,6 @@ jobs:
       package_path: ${{ inputs.package_path }}
       architecture: ${{ inputs.architecture }}
       force: ${{ inputs.force }}
+      publish: ${{ inputs.publish }}
+      source_repo: ${{ inputs.source_repo }}
     secrets: inherit
