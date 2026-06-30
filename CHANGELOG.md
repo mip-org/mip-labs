@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-30
+
+- `fmm2d` (numbl_wasm): define `flong` (`int64_t`) in `fmm2d_c.h`. fort2c emits
+  `flong`-typed temps for allocatable-array capacities (the `*_acap` vars), but
+  the runtime header only defined `fint`/`fcomplex`, so the generated C failed
+  to compile ("undeclared identifier 'flong'").
+
 ## 2026-06-25
 
 - `build-package` caller: forward `publish` and `source_repo` to the reusable
