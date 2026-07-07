@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-07
+
+- Added `meshio` (`main`, branch-tracked): a MATLAB port of the Python
+  [meshio](https://github.com/nschloe/meshio) mesh I/O library (gmsh, netgen,
+  obj, off, ply, stl, tetgen). Pure MATLAB (`any`); fetched from
+  [danfortunato/meshio](https://github.com/danfortunato/meshio), which ships
+  its own `mip.yaml`, so the channel entry is just `source.yaml`.
+
 ## 2026-06-30
 
 - `fmm2d` (numbl_wasm): define `flong` (`int64_t`) in `fmm2d_c.h`. fort2c emits
