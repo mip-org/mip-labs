@@ -1,0 +1,7 @@
+# Prototype build of the mip package manager with project-level environments
+# (the `mip env` subcommand group). See mip-org/mip#337 and the branch's
+# docs/project-environments.md. The release-directory name equals the source
+# branch, per this channel's branch-build convention; do not add a `version:`.
+source:
+  git: "https://github.com/mip-org/mip"
+  branch: "project-environments-prototype"

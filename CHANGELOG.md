@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-07-08
+
+- Added `mip` (`project-environments-prototype`, branch-tracked): a prototype
+  build of the mip package manager with project-level environments (the
+  `mip env` subcommand group; `mipenv.yaml`/`mipenv.lock`). See
+  [mip-org/mip#337](https://github.com/mip-org/mip/issues/337). Pure MATLAB
+  (`any`); fetched from the `project-environments-prototype` branch of
+  [mip-org/mip](https://github.com/mip-org/mip), which ships its own
+  `mip.yaml`, so the channel entry is just `source.yaml`.
+
 ## 2026-07-07
 
 - Added `meshio` (`main`, branch-tracked): a MATLAB port of the Python
