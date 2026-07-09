@@ -1,0 +1,6 @@
+# OpenFLASH is mostly a Python/Jupyter project; only the matlab/ component is
+# packaged (src/ holds run_MEEM, the matched eigenfunction expansion method).
+source:
+  git: "https://github.com/symbiotic-engineering/OpenFLASH"
+  branch: "v1.0.37"
+  subdirectory: "matlab"

@@ -1,0 +1,19 @@
+name: openflash
+description: "MATLAB component of OpenFLASH: semi-analytical hydrodynamics via the matched eigenfunction expansion method (MEEM). Requires the Symbolic Math Toolbox."
+version: "1.0.37"
+license: "MIT"
+homepage: "https://github.com/symbiotic-engineering/OpenFLASH"
+repository: "https://github.com/symbiotic-engineering/OpenFLASH"
+dependencies: []
+
+paths:
+  - path: "src"
+
+extra_paths:
+  tests:
+    - path: "test"
+
+# No test_script: run_MEEM needs the Symbolic Math Toolbox, which the CI
+# runners don't have.
+builds:
+  - architectures: [any]

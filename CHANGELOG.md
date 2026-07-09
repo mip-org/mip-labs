@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-09
+
+- Added `openflash@1.0.37`: the MATLAB component (`matlab/` subdirectory) of
+  symbiotic-engineering/OpenFLASH — semi-analytical hydrodynamics via the
+  matched eigenfunction expansion method (`run_MEEM`). MIT, pure MATLAB,
+  `any` arch. Needs the Symbolic Math Toolbox at runtime, so no channel test
+  script ships. Packaged as a dependency of MDOcean (see mip-org/mip#337).
+
 ## 2026-07-08
 
 - Added `mip` (`project-environments-prototype`, branch-tracked): a prototype
