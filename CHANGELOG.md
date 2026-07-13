@@ -2,6 +2,17 @@
 
 ## 2026-07-13
 
+- Added `matnwb@2.10.0`: NeurodataWithoutBorders/matnwb, the MATLAB interface
+  for reading and writing Neurodata Without Borders (NWB) 2.x files. BSD-2-Clause.
+  Pure MATLAB (`any`), fetched from upstream tag `v2.10.0`. The `+types` classes
+  ship pre-generated for the active NWB schema (2.9.0), so `nwbExport` /
+  `nwbRead` round-trip with no code-generation step. Only the root (namespaces
+  auto-discovered) and `external_packages/fastsearch` are on the path;
+  `tutorials/` is opt-in via `--with tutorials`. Trimmed `docs/` (8 MB rendered
+  Sphinx), `logo/`, and `.github/`. `test_matnwb.m` builds an `NwbFile` and
+  round-trips it through disk in base MATLAB. See the package README (notably
+  the `nwbRead` `savedir` note for read-only installs).
+
 - Added `abct@main`: mikarubi/abct, Mika Rubinov's toolbox for unsupervised
   learning, network science, and imaging/network neuroscience (global
   residualization, Loyvain / co-Loyvain clustering, canonical & co-neighbor

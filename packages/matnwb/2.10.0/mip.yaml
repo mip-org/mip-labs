@@ -1,0 +1,32 @@
+name: matnwb
+description: "MATLAB interface for reading and writing Neurodata Without Borders (NWB) 2.x files. Autogenerates MATLAB classes from the NWB format schema; read/write NWB with nwbRead / nwbExport."
+version: "2.10.0"
+license: "BSD-2-Clause"
+homepage: "https://neurodatawithoutborders.github.io/matnwb/"
+repository: "https://github.com/NeurodataWithoutBorders/matnwb"
+dependencies: []
+
+# Pure MATLAB (no MEX / native code). The public entry points (NwbFile,
+# nwbRead, nwbExport, nwbInstallExtension, generateCore, generateExtension,
+# nwbtest, ...) sit directly in the package root; the +types, +io, +file,
+# +spec, +schemes, +util, +misc, +matnwb and +contrib namespaces beneath it
+# are discovered by MATLAB automatically, so only the root needs to be on the
+# path. external_packages/fastsearch is NOT a namespace, so it is listed
+# explicitly — +util/loadTimeSeriesData and loadTimeSeriesTimestamps call the
+# bare `fastsearch` function.
+paths:
+  - path: "."
+  - path: "external_packages/fastsearch"
+
+# The .mlx tutorials are opt-in (mip load matnwb --with tutorials); they are not
+# code needed on the default path.
+extra_paths:
+  tutorials:
+    - path: "tutorials"
+
+builds:
+  # Pure MATLAB, runs everywhere. matnwb ships the +types classes pre-generated
+  # for its active NWB schema version, so a plain nwbRead/nwbExport round-trip
+  # works with no code-generation step and no toolboxes beyond base MATLAB.
+  - architectures: [any]
+    test_script: test_matnwb.m

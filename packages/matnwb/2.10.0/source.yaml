@@ -1,0 +1,20 @@
+# Build MatNWB from the upstream NeurodataWithoutBorders/matnwb repo at tag
+# v2.10.0. Unlike the in-repo packages in this channel, matnwb is fetched from
+# its own upstream repo; the channel files below (mip.yaml, test_matnwb.m, this
+# README, example.m) are overlaid on top of the clone.
+#
+# Do NOT add a `version:` field here — the release-dir name (2.10.0) is the
+# version and must equal both mip.yaml's `version:` and, with the `v` prefix,
+# source.branch (v2.10.0).
+source:
+  git: "https://github.com/NeurodataWithoutBorders/matnwb"
+  branch: "v2.10.0"
+  # Trim trees the packaged toolbox never needs on an end-user machine:
+  #   docs    - 8 MB of pre-rendered Sphinx/RST documentation (matnwb.readthedocs.io).
+  #   logo    - 2.5 MB of image assets used only by the upstream README.
+  #   .github - upstream CI config / dev scaffolding.
+  # Kept on purpose: nwb-schema/ (needed by generateCore for legacy schema
+  # versions), jar/schema.jar (the YAML schema reader used by nwbRead/generateCore),
+  # external_packages/fastsearch (used by +util), +tests/ (the toolbox's own test
+  # suite, driven by nwbtest), and tutorials/ (exposed via extra_paths in mip.yaml).
+  remove_dirs: [docs, logo, .github]

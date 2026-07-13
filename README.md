@@ -17,6 +17,7 @@ mip load <name>
 | --- | --- | --- |
 | [abct](packages/abct/main) | main | Mika Rubinov's toolbox for unsupervised learning, network science, and imaging/network neuroscience: residualization, Loyvain clustering, canonical/co-neighbor components, m-UMAP, degree/dispersion centralities, shrinkage. |
 | [janklab-core](packages/janklab-core/0.2.2) | 0.2.2 | General-purpose MATLAB utility library (types, date/time, validators, utils); Java-backed DB/Excel/FTP features need `init_janklab`. |
+| [matnwb](packages/matnwb/2.10.0) | 2.10.0 | MATLAB interface for reading and writing Neurodata Without Borders (NWB) 2.x files; `nwbRead` / `nwbExport` with schema-generated `+types` classes. |
 | [mlxshake](packages/mlxshake/0.3.0) | 0.3.0 | Export MATLAB Live Scripts (.mlx) to LaTeX/HTML/PDF/Word (Markdown broken on recent MATLAB). |
 | [numblsavefig](packages/numblsavefig/1.0.0) | 1.0.0 | Save a MATLAB figure to numbl's HDF5 figure format. |
 | [openflash](packages/openflash/1.0.37) | 1.0.37 | MATLAB component of OpenFLASH: semi-analytical hydrodynamics via MEEM (needs Symbolic Math Toolbox). |
