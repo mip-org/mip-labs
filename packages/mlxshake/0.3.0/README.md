@@ -95,6 +95,15 @@ example Live Scripts remain available in the
 
 ## Tests
 
-`test_mlxshake.m` verifies the public API is on the path and exports the bundled
-`test_fixture.mlx` to LaTeX and HTML (and via `mlx2latex`), asserting non-empty
-output. It intentionally skips Markdown export (issue 2 above).
+`test_mlxshake.m` has two parts:
+
+- **Always** (including headless CI): the public API resolves on the path, and
+  constructing `MlxshakeBase` succeeds — that construction runs the library
+  initializer, so it is the regression guard for the log4j patch (issue 1).
+- **When a display is available**: it exports the bundled `test_fixture.mlx` to
+  LaTeX and HTML (and via `mlx2latex`), asserting non-empty output.
+
+The MATLAB Live Editor export requires a display, and the channel's `any`
+runner is headless, so the export checks are skipped there (they run on any
+machine with a display). Markdown export is intentionally never tested
+(issue 2 above).

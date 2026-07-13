@@ -1,19 +1,27 @@
 function test_mlxshake()
 % Channel test for mlxshake. Runs after `mip load mlxshake`.
 %
-% Verifies the public API is on the path, then exports the bundled
-% test_fixture.mlx to LaTeX and HTML (the "direct" export formats) and via
-% mlx2latex, asserting each produces a non-empty output file. Constructing
-% MlxExportOptions also exercises the library initializer, which is where the
-% channel's log4j patch (see README.md) takes effect.
+% Two parts:
+%   1. Display-independent checks (always run, incl. headless CI): the public
+%      API resolves, and constructing MlxshakeBase succeeds. That construction
+%      is what triggers the library initializer -> Log4jConfigurator, so it is
+%      the regression guard for the channel's log4j patch (see README.md);
+%      without the patch it crashes on recent MATLAB.
+%   2. Live Editor export (display-dependent): exports the bundled
+%      test_fixture.mlx to LaTeX and HTML. matlab.internal.liveeditor requires
+%      a display, and the channel's `any` runner is headless, so these checks
+%      are skipped when no DISPLAY is available. They run wherever one is (local
+%      desktop / a runner with an X server).
 %
-% Markdown export is intentionally NOT tested: on recent MATLAB it fails
+% Markdown export is intentionally never tested: on recent MATLAB it fails
 % because upstream's LaTeX->Markdown image handling expects a "<stem>_images"
 % figure folder while modern MATLAB emits "<stem>_media" (see README.md).
 
 fprintf('Testing mlxshake...\n');
 
-% Public API is resolvable (namespaced functions/classes: use which, since
+% --- 1. Display-independent checks ---
+
+% Public API resolves (namespaced members: use which, since
 % exist('pkg.fcn','file') can report 0 for +package members).
 for name = ["janklab.mlxshake.exportlivescript", ...
             "janklab.mlxshake.mlx2latex", ...
@@ -22,7 +30,19 @@ for name = ["janklab.mlxshake.exportlivescript", ...
     assert(~isempty(which(char(name))), 'API not found on path: %s', name);
 end
 
-% Locate the bundled fixture relative to this test file (robust to cwd).
+% Constructing MlxshakeBase runs the library initializer, exercising the
+% patched Log4jConfigurator. Errors here on recent MATLAB without the patch.
+janklab.mlxshake.internal.MlxshakeBase();
+fprintf('Library initializer OK (log4j patch effective).\n');
+
+% --- 2. Live Editor export (needs a display) ---
+
+if isunix && ~ismac && isempty(getenv('DISPLAY'))
+    fprintf(['No DISPLAY (headless runner): skipping Live Editor export ' ...
+             'checks.\nSUCCESS\n']);
+    return
+end
+
 thisDir = fileparts(mfilename('fullpath'));
 mlx = fullfile(thisDir, 'test_fixture.mlx');
 assert(exist(mlx, 'file') == 2, 'test_fixture.mlx not found next to the test');
