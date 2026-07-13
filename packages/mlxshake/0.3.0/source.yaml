@@ -1,0 +1,18 @@
+# Build from the upstream janklab/MlxShake repo at tag v0.3.0. The channel
+# files below (mip.yaml, the test + fixture, this README, example.m) are
+# overlaid on top of the clone, as is a patched copy of
+# Mcode/.../+logger/Log4jConfigurator.m (see README.md — it fixes an upstream
+# log4j crash that otherwise aborts every export entry point on recent MATLAB).
+#
+# Do NOT add a `version:` field here — the release-dir name (0.3.0) is the
+# version and must equal both mip.yaml's `version:` and, with the `v` prefix,
+# source.branch (v0.3.0).
+source:
+  git: "https://github.com/janklab/MlxShake"
+  branch: "v0.3.0"
+  # Only Mcode/ goes on the path. Trim the heavy documentation trees (rendered
+  # site + sources), the developer scaffolding, and the bundled examples: the
+  # examples are ~5 MB of mostly stale rendered output, and the package ships
+  # its own small test_fixture.mlx for the channel test. bin/ (the CLI wrapper)
+  # and the root project files are kept.
+  remove_dirs: [doc, docs, docs-src, doc-project, dev-kit, examples, .github]

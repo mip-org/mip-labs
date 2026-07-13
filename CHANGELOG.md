@@ -2,6 +2,15 @@
 
 ## 2026-07-13
 
+- Added `mlxshake@0.3.0`: janklab/MlxShake, exports MATLAB Live Scripts (.mlx)
+  to LaTeX/HTML/PDF/Word/Markdown, by Andrew Janke. Pure MATLAB (`any`), fetched
+  from upstream tag `v0.3.0`. License is the MathWorks-specific BSD variant
+  (`LicenseRef-MathWorks`). Overlays a one-line patch to the vendored
+  `Log4jConfigurator` that fixes an upstream log4j crash which otherwise aborts
+  every export entry point on recent MATLAB; with it, LaTeX/HTML/PDF/Word export
+  work. Markdown export remains broken on recent MATLAB (upstream `_media` image
+  drift) and is documented as such. See the package README.
+
 - Added `janklab-core@0.2.2`: janklab/janklab-core, a general-purpose MATLAB
   utility library by Andrew Janke (extended type system, date/time classes,
   validators, misc utilities). Apache-2.0. Fetched from upstream tag `v0.2.2`.

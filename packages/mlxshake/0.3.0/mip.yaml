@@ -1,0 +1,16 @@
+name: mlxshake
+description: "Export MATLAB Live Scripts (.mlx) to LaTeX, HTML, PDF, Word, and Markdown. By Andrew Janke (janklab)."
+version: "0.3.0"
+license: "LicenseRef-MathWorks"
+homepage: "https://mlxshake.janklab.net"
+repository: "https://github.com/janklab/MlxShake"
+dependencies: []
+
+# Pure MATLAB. All code lives under the janklab.mlxshake namespace, so only
+# Mcode/ needs to be on the path; MATLAB discovers the +janklab package under it.
+paths:
+  - path: "Mcode"
+
+builds:
+  - architectures: [any]
+    test_script: test_mlxshake.m
