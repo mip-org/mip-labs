@@ -1,0 +1,47 @@
+name: janklab-core
+description: "General-purpose utility library for MATLAB: an extended type system, date/time classes, validators, and misc utilities (Java-backed DB/Excel/FTP features need init_janklab)."
+version: "0.2.2"
+license: "Apache-2.0"
+homepage: "https://janklab.net"
+repository: "https://github.com/janklab/janklab-core"
+dependencies: []
+
+# These mirror the MATLAB-path setup that janklab's own init_janklab performs:
+# the five Mcode/ subdirectories plus the three redistributed MATLAB libraries
+# under lib/matlab. Kept in the same order as init_janklab so path precedence
+# matches upstream. `mip load janklab-core` makes the pure-MATLAB layer (types,
+# validators, utilities, date/time, and the binsearch MEX) usable directly.
+#
+# It does NOT put the redistributed JARs on the Java classpath — mip only does
+# addpath, not javaaddpath. The Java-backed features (jl.sql / MDBC, Excel I/O
+# via POI, jl.net.ftp, SwingExplorer, SLF4M logging) require running
+# init_janklab after load to set up the classpath. See README.md.
+paths:
+  - path: "Mcode/classes"
+  - path: "Mcode/commands"
+  - path: "Mcode/monkeypatch"
+  - path: "Mcode/toplevel"
+  - path: "Mcode/validators"
+  - path: "lib/matlab/matlab-jarext-inspector/matlab-jarext-inspector-1.0.1/Mcode"
+  - path: "lib/matlab/dispstr/dispstr-1.1.1/Mcode"
+  - path: "lib/matlab/SLF4M/SLF4M-1.2.2/Mcode"
+
+extra_paths:
+  examples:
+    - path: "examples"
+  tests:
+    - path: "tests"
+
+builds:
+  # Native builds: compile the single binsearch MEX and run the MEX test
+  # (which exercises the MEX so the coverage gate passes). The C is a
+  # self-contained mex.h program with no third-party dependencies, so a plain
+  # mex() call works on all three platforms — no compile_windows.m needed.
+  - architectures: [linux_x86_64, macos_arm64, windows_x86_64]
+    compile_script: compile.m
+    test_script: test_janklab_core_mex.m
+  # Catch-all fallback for any other architecture: ship the pure-MATLAB layer
+  # only (no MEX). binsearch on double/single is unavailable there and callers
+  # fall through to binsearch_mcode for other types.
+  - architectures: [any]
+    test_script: test_janklab_core.m

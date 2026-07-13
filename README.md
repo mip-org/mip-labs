@@ -15,6 +15,7 @@ mip load <name>
 
 | Package | Version | Description |
 | --- | --- | --- |
+| [janklab-core](packages/janklab-core/0.2.2) | 0.2.2 | General-purpose MATLAB utility library (types, date/time, validators, utils); Java-backed DB/Excel/FTP features need `init_janklab`. |
 | [numblsavefig](packages/numblsavefig/1.0.0) | 1.0.0 | Save a MATLAB figure to numbl's HDF5 figure format. |
 | [openflash](packages/openflash/1.0.37) | 1.0.37 | MATLAB component of OpenFLASH: semi-analytical hydrodynamics via MEEM (needs Symbolic Math Toolbox). |
 | [simplemex](packages/simplemex/1.0.0) | 1.0.0 | Trivial single-threaded C MEX (`y = x + 1`); a test fixture for mip's lifecycle and Windows MEX locking. |

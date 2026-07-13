@@ -1,0 +1,19 @@
+# Build from the upstream janklab-core repo at tag v0.2.2. Unlike most packages
+# in this channel, janklab-core is fetched from its own upstream repo (the
+# channel files below — mip.yaml, compile.m, the tests, this README — are
+# overlaid on top of the clone).
+#
+# Do NOT add a `version:` field here — the release-dir name (0.2.2) is the
+# version and must equal both mip.yaml's `version:` and, with the `v` prefix,
+# source.branch (v0.2.2).
+source:
+  git: "https://github.com/janklab/janklab-core"
+  branch: "v0.2.2"
+  # Trim trees the packaged library never needs on an end-user machine:
+  #   src          - Maven source for lib/java/janklab-java-*.jar; we ship the
+  #                  prebuilt jar, not a Java toolchain, so the source is dead weight.
+  #   M-doc        - generated documentation.
+  #   dev-kit, scratch - developer scaffolding.
+  #   .github      - upstream CI config.
+  # lib/ (the redistributed JARs), Mcode/, examples/, tests/ and doc/ are kept.
+  remove_dirs: [src, M-doc, dev-kit, scratch, .github]

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-07-13
+
+- Added `janklab-core@0.2.2`: janklab/janklab-core, a general-purpose MATLAB
+  utility library by Andrew Janke (extended type system, date/time classes,
+  validators, misc utilities). Apache-2.0. Fetched from upstream tag `v0.2.2`.
+  Native builds (linux/macOS/Windows) compile the single `binsearch_mex` MEX
+  (self-contained C, `-static-libgcc` on Linux); an `[any]` fallback ships the
+  pure-MATLAB layer only. `mip load` sets up the MATLAB path; the Java-backed
+  features (MDBC/SQL, POI Excel, FTP, SLF4M logging) need `init_janklab` to add
+  the bundled JARs to the classpath — see the package README.
+
 ## 2026-07-09
 
 - Added `openflash@1.0.37`: the MATLAB component (`matlab/` subdirectory) of
