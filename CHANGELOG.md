@@ -13,17 +13,15 @@
   round-trips it through disk in base MATLAB. See the package README (notably
   the `nwbRead` `savedir` note for read-only installs).
 
-- Added `abct@main`: mikarubi/abct, Mika Rubinov's toolbox for unsupervised
+- Added `abct@2025.9`: mikarubi/abct, Mika Rubinov's toolbox for unsupervised
   learning, network science, and imaging/network neuroscience (global
   residualization, Loyvain / co-Loyvain clustering, canonical & co-neighbor
   components, m-UMAP embeddings, degree/dispersion centralities, network
   shrinkage). MIT. Pure MATLAB (`any`), fetched from the upstream repo's
-  `abct-matlab/abct/` subdirectory and branch-tracked (the checked-in
-  `mpackage.json` version and the one tag disagree, and the project is under
-  active development). `test_abct.m` exercises the toolbox-free core
-  (`degree`, `dispersion`, `residualn`, `shrinkage`, `louvains`) in base
-  MATLAB; a few optional code paths need add-on toolboxes and are documented in
-  the package README.
+  `abct-matlab/abct/` subdirectory and pinned to release tag `2025.9`.
+  `test_abct.m` exercises the toolbox-free core (`degree`, `dispersion`,
+  `residualn`, `shrinkage`, `louvains`) in base MATLAB; a few optional code
+  paths need add-on toolboxes and are documented in the package README.
 
 - Added `mlxshake@0.3.0`: janklab/MlxShake, exports MATLAB Live Scripts (.mlx)
   to LaTeX/HTML/PDF/Word/Markdown, by Andrew Janke. Pure MATLAB (`any`), fetched

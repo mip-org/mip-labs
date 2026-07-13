@@ -15,7 +15,7 @@ shrinkage.
   network science, and imaging/network neuroscience.* arXiv, 2025,
   [doi:10.48550/arXiv.2508.10045](https://doi.org/10.48550/arXiv.2508.10045).
 - License: MIT. Author: Mika Rubinov (Vanderbilt University).
-- Version: tracks the `main` branch of the upstream repo.
+- Version: `2025.9`, pinned to the upstream release tag of the same name.
 
 ## Install
 
