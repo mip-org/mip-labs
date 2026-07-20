@@ -23,7 +23,7 @@ mip load <name>
 | [openflash](packages/openflash/1.0.37) | 1.0.37 | MATLAB component of OpenFLASH: semi-analytical hydrodynamics via MEEM (needs Symbolic Math Toolbox). |
 | [simplemex](packages/simplemex/1.0.0) | 1.0.0 | Trivial single-threaded C MEX (`y = x + 1`); a test fixture for mip's lifecycle and Windows MEX locking. |
 | [threadedmex](packages/threadedmex/1.0.0) | 1.0.0 | Trivial OpenMP-parallel C MEX (`y = x + 1`); Windows-only fixture for thread-pool MEX file-locking. |
-| [treeweave](packages/treeweave/main) | main | Piecewise-polynomial function approximator (MATLAB MEX binding). |
+| [treeweave](packages/treeweave/0.0.1) | 0.0.1 | Piecewise-polynomial function approximator (MATLAB MEX binding). |
 
 ## How this channel builds
 

@@ -1,6 +1,6 @@
 name: treeweave
 description: "Piecewise-polynomial function approximator (adaptive tree of polynomial leaves) with a MATLAB MEX binding."
-version:
+version: "0.0.1"
 license: "BSD-3-Clause"
 homepage: "https://github.com/DiamonDinoia/treeweave"
 repository: "https://github.com/DiamonDinoia/treeweave"

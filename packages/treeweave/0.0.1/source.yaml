@@ -3,12 +3,12 @@
 # (the checked-in mwrap gateway + the treeweave_c_static C ABI), so the whole
 # source tree is fetched and compile.m drives CMake against it.
 #
-# treeweave has no release tags yet (VERSION is 0.0.0), so this is branch-tracked:
-# the release-dir name (main) is the version and must equal source.branch. Do NOT
-# add a `version:` field here, and leave mip.yaml's `version:` blank.
+# Tag-tracked at treeweave v0.0.1: the release-dir name (0.0.1) is the version
+# and equals mip.yaml's `version:`; source.branch is the full tag (v0.0.1). Do
+# NOT add a `version:` field here.
 source:
   git: "https://github.com/DiamonDinoia/treeweave"
-  branch: "main"
+  branch: "v0.0.1"
   # Trim trees the MATLAB MEX build never touches (docs assets, conda recipe).
   # The C++ sources, headers, cmake/, and bindings/matlab are all kept — they are
   # the build inputs.

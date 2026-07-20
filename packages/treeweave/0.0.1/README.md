@@ -7,7 +7,7 @@ This package ships the **MATLAB MEX binding** from
 [DiamonDinoia/treeweave](https://github.com/DiamonDinoia/treeweave) (author:
 Marco Barbone; BSD-3-Clause).
 
-Branch-tracked at `main` (upstream has no release tags yet).
+Tag-tracked at upstream `v0.0.1`.
 
 ## Install
 
@@ -24,7 +24,7 @@ delete(obj);                        % free C-side memory
 ```
 
 See [`example.m`](example.m) for a 2-D → 3-D vector fit, and the upstream
-[`bindings/matlab/README.md`](https://github.com/DiamonDinoia/treeweave/blob/main/bindings/matlab/README.md)
+[`bindings/matlab/README.md`](https://github.com/DiamonDinoia/treeweave/blob/v0.0.1/bindings/matlab/README.md)
 for the full API (`'sorted'`, `'transposed'`, `memory_usage`, `print_stats`, …).
 
 ## What is shipped

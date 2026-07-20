@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-20
+
+- `treeweave`: released `0.0.1`. Migrated from branch-tracked `main` to
+  tag-tracked upstream `v0.0.1` (release dir `main` → `0.0.1`, `mip.yaml`
+  `version: "0.0.1"`, `source.yaml` `branch: "v0.0.1"`).
+
 ## 2026-07-13
 
 - Added `matnwb@2.10.0`: NeurodataWithoutBorders/matnwb, the MATLAB interface
@@ -73,7 +79,6 @@
   `flong`-typed temps for allocatable-array capacities (the `*_acap` vars), but
   the runtime header only defined `fint`/`fcomplex`, so the generated C failed
   to compile ("undeclared identifier 'flong'").
-
 ## 2026-06-25
 
 - `build-package` caller: forward `publish` and `source_repo` to the reusable
