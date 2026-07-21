@@ -11,20 +11,6 @@ mip install --channel mip-org/labs <name>
 mip load <name>
 ```
 
-## Packages
-
-| Package | Version | Description |
-| --- | --- | --- |
-| [abct](packages/abct/2025.9) | 2025.9 | Mika Rubinov's toolbox for unsupervised learning, network science, and imaging/network neuroscience: residualization, Loyvain clustering, canonical/co-neighbor components, m-UMAP, degree/dispersion centralities, shrinkage. |
-| [janklab-core](packages/janklab-core/0.2.2) | 0.2.2 | General-purpose MATLAB utility library (types, date/time, validators, utils); Java-backed DB/Excel/FTP features need `init_janklab`. |
-| [matnwb](packages/matnwb/2.10.0) | 2.10.0 | MATLAB interface for reading and writing Neurodata Without Borders (NWB) 2.x files; `nwbRead` / `nwbExport` with schema-generated `+types` classes. |
-| [mlxshake](packages/mlxshake/0.3.0) | 0.3.0 | Export MATLAB Live Scripts (.mlx) to LaTeX/HTML/PDF/Word (Markdown broken on recent MATLAB). |
-| [numblsavefig](packages/numblsavefig/1.0.0) | 1.0.0 | Save a MATLAB figure to numbl's HDF5 figure format. |
-| [openflash](packages/openflash/1.0.37) | 1.0.37 | MATLAB component of OpenFLASH: semi-analytical hydrodynamics via MEEM (needs Symbolic Math Toolbox). |
-| [simplemex](packages/simplemex/1.0.0) | 1.0.0 | Trivial single-threaded C MEX (`y = x + 1`); a test fixture for mip's lifecycle and Windows MEX locking. |
-| [threadedmex](packages/threadedmex/1.0.0) | 1.0.0 | Trivial OpenMP-parallel C MEX (`y = x + 1`); Windows-only fixture for thread-pool MEX file-locking. |
-| [treeweave](packages/treeweave/0.0.1) | 0.0.1 | Piecewise-polynomial function approximator (MATLAB MEX binding). |
-
 ## How this channel builds
 
 A MIP package channel. Builds run one (package, architecture) at a time. They are triggered automatically on push to `main`, daily via a scheduled probe, or manually via a GitHub issue. The build engine (reusable workflows, the `mip-channel` CLI, the MATLAB build scripts, the Pages site template) lives in [`mip-org/mip_channel_tools`](https://github.com/mip-org/mip_channel_tools); the workflows here are thin callers.
