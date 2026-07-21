@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-20T09:42:17Z",
+  "generated": "2026-07-21T09:09:55Z",
   "repo": "mip-org/mip-labs",
   "total_lifetime_downloads": 25,
   "assets": {
@@ -10,7 +10,7 @@
       "asset_id": 475654130,
       "created_at": "2026-07-13T16:09:12Z",
       "first_seen": "2026-07-14T08:36:46Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "abct-main/abct-main-any.mhl": {
       "lifetime": 1,
@@ -19,7 +19,7 @@
       "asset_id": 475550310,
       "created_at": "2026-07-13T14:15:38Z",
       "first_seen": "2026-07-14T08:36:46Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "fmm2d-main/fmm2d-main-linux_x86_64.mhl": {
       "lifetime": 0,
@@ -28,7 +28,7 @@
       "asset_id": 462570675,
       "created_at": "2026-06-30T22:19:22Z",
       "first_seen": "2026-06-23T10:11:08Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "fmm2d-main/fmm2d-main-macos_arm64.mhl": {
       "lifetime": 0,
@@ -37,7 +37,7 @@
       "asset_id": 462570314,
       "created_at": "2026-06-30T22:18:53Z",
       "first_seen": "2026-06-23T10:11:08Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "fmm2d-main/fmm2d-main-numbl_wasm.mhl": {
       "lifetime": 0,
@@ -46,7 +46,7 @@
       "asset_id": 463066308,
       "created_at": "2026-07-01T09:46:51Z",
       "first_seen": "2026-06-23T10:11:08Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "fmm2d-main/fmm2d-main-windows_x86_64.mhl": {
       "lifetime": 3,
@@ -55,7 +55,7 @@
       "asset_id": 462571258,
       "created_at": "2026-06-30T22:20:17Z",
       "first_seen": "2026-06-23T10:11:08Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "janklab_core-0.2.2/janklab_core-0.2.2-any.mhl": {
       "lifetime": 0,
@@ -64,7 +64,7 @@
       "asset_id": 475465203,
       "created_at": "2026-07-13T12:34:33Z",
       "first_seen": "2026-07-14T08:36:46Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "janklab_core-0.2.2/janklab_core-0.2.2-linux_x86_64.mhl": {
       "lifetime": 1,
@@ -73,7 +73,7 @@
       "asset_id": 475466842,
       "created_at": "2026-07-13T12:36:23Z",
       "first_seen": "2026-07-14T08:36:46Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "janklab_core-0.2.2/janklab_core-0.2.2-macos_arm64.mhl": {
       "lifetime": 0,
@@ -82,7 +82,7 @@
       "asset_id": 475465586,
       "created_at": "2026-07-13T12:35:02Z",
       "first_seen": "2026-07-14T08:36:46Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "janklab_core-0.2.2/janklab_core-0.2.2-windows_x86_64.mhl": {
       "lifetime": 0,
@@ -91,7 +91,7 @@
       "asset_id": 475466749,
       "created_at": "2026-07-13T12:36:17Z",
       "first_seen": "2026-07-14T08:36:46Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "matnwb-2.10.0/matnwb-2.10.0-any.mhl": {
       "lifetime": 2,
@@ -100,7 +100,7 @@
       "asset_id": 475554035,
       "created_at": "2026-07-13T14:19:57Z",
       "first_seen": "2026-07-14T08:36:46Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "meshio-main/meshio-main-any.mhl": {
       "lifetime": 3,
@@ -109,7 +109,7 @@
       "asset_id": 470456306,
       "created_at": "2026-07-08T16:37:53Z",
       "first_seen": "2026-07-08T09:07:40Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "mip-install-url-syntax-flip/mip-install-url-syntax-flip-any.mhl": {
       "lifetime": 0,
@@ -118,7 +118,16 @@
       "asset_id": 478184609,
       "created_at": "2026-07-15T17:18:57Z",
       "first_seen": "2026-07-16T08:41:18Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
+    },
+    "mip-mep-0008-b/mip-mep-0008-b-any.mhl": {
+      "lifetime": 0,
+      "base": 0,
+      "last_raw": 0,
+      "asset_id": 484441470,
+      "created_at": "2026-07-21T08:30:23Z",
+      "first_seen": "2026-07-21T09:09:55Z",
+      "updated": "2026-07-21T09:09:55Z"
     },
     "mip-mep-0008/mip-mep-0008-any.mhl": {
       "lifetime": 2,
@@ -127,7 +136,7 @@
       "asset_id": 477846317,
       "created_at": "2026-07-15T11:14:44Z",
       "first_seen": "2026-07-16T08:41:18Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "mip-mep-0009/mip-mep-0009-any.mhl": {
       "lifetime": 2,
@@ -136,7 +145,7 @@
       "asset_id": 480686445,
       "created_at": "2026-07-17T18:32:04Z",
       "first_seen": "2026-07-16T08:41:18Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "mip-project-environments-prototype/mip-project-environments-prototype-any.mhl": {
       "lifetime": 2,
@@ -145,7 +154,7 @@
       "asset_id": 470444739,
       "created_at": "2026-07-08T16:22:35Z",
       "first_seen": "2026-07-09T10:04:21Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "mlxshake-0.3.0/mlxshake-0.3.0-any.mhl": {
       "lifetime": 1,
@@ -154,7 +163,7 @@
       "asset_id": 475475760,
       "created_at": "2026-07-13T12:46:08Z",
       "first_seen": "2026-07-14T08:36:46Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "numblsavefig-1.0.0/numblsavefig-1.0.0-any.mhl": {
       "lifetime": 3,
@@ -163,7 +172,7 @@
       "asset_id": 452290535,
       "created_at": "2026-06-19T15:43:16Z",
       "first_seen": "2026-06-20T09:49:48Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "openflash-1.0.37/openflash-1.0.37-any.mhl": {
       "lifetime": 2,
@@ -172,7 +181,7 @@
       "asset_id": 471473494,
       "created_at": "2026-07-09T15:35:33Z",
       "first_seen": "2026-07-10T10:00:40Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "simplemex-1.0.0/simplemex-1.0.0-linux_x86_64.mhl": {
       "lifetime": 0,
@@ -181,7 +190,7 @@
       "asset_id": 455984521,
       "created_at": "2026-06-23T21:27:50Z",
       "first_seen": "2026-06-24T09:58:00Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "simplemex-1.0.0/simplemex-1.0.0-macos_arm64.mhl": {
       "lifetime": 0,
@@ -190,7 +199,7 @@
       "asset_id": 455984584,
       "created_at": "2026-06-23T21:27:55Z",
       "first_seen": "2026-06-24T09:58:00Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "simplemex-1.0.0/simplemex-1.0.0-windows_x86_64.mhl": {
       "lifetime": 1,
@@ -199,7 +208,7 @@
       "asset_id": 463066751,
       "created_at": "2026-07-01T09:47:24Z",
       "first_seen": "2026-06-24T09:58:00Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "threadedmex-1.0.0/threadedmex-1.0.0-windows_x86_64.mhl": {
       "lifetime": 1,
@@ -208,7 +217,34 @@
       "asset_id": 463066990,
       "created_at": "2026-07-01T09:47:35Z",
       "first_seen": "2026-06-24T09:58:00Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
+    },
+    "treeweave-0.0.1/treeweave-0.0.1-linux_x86_64.mhl": {
+      "lifetime": 0,
+      "base": 0,
+      "last_raw": 0,
+      "asset_id": 483830234,
+      "created_at": "2026-07-20T19:44:35Z",
+      "first_seen": "2026-07-21T09:09:55Z",
+      "updated": "2026-07-21T09:09:55Z"
+    },
+    "treeweave-0.0.1/treeweave-0.0.1-macos_arm64.mhl": {
+      "lifetime": 0,
+      "base": 0,
+      "last_raw": 0,
+      "asset_id": 483827625,
+      "created_at": "2026-07-20T19:41:53Z",
+      "first_seen": "2026-07-21T09:09:55Z",
+      "updated": "2026-07-21T09:09:55Z"
+    },
+    "treeweave-0.0.1/treeweave-0.0.1-windows_x86_64.mhl": {
+      "lifetime": 0,
+      "base": 0,
+      "last_raw": 0,
+      "asset_id": 483831461,
+      "created_at": "2026-07-20T19:45:48Z",
+      "first_seen": "2026-07-21T09:09:55Z",
+      "updated": "2026-07-21T09:09:55Z"
     },
     "treeweave-main/treeweave-main-linux_x86_64.mhl": {
       "lifetime": 0,
@@ -217,7 +253,7 @@
       "asset_id": 478940160,
       "created_at": "2026-07-16T08:17:59Z",
       "first_seen": "2026-06-24T09:58:00Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "treeweave-main/treeweave-main-macos_arm64.mhl": {
       "lifetime": 0,
@@ -226,7 +262,7 @@
       "asset_id": 478937826,
       "created_at": "2026-07-16T08:15:17Z",
       "first_seen": "2026-06-24T09:58:00Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     },
     "treeweave-main/treeweave-main-windows_x86_64.mhl": {
       "lifetime": 0,
@@ -235,7 +271,7 @@
       "asset_id": 478940748,
       "created_at": "2026-07-16T08:18:49Z",
       "first_seen": "2026-06-25T09:52:43Z",
-      "updated": "2026-07-20T09:42:17Z"
+      "updated": "2026-07-21T09:09:55Z"
     }
   }
 }
