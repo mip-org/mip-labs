@@ -2,10 +2,14 @@
 
 ## 2026-08-24
 
-- `treeweave`: released `0.0.3`, tracking upstream tag `v0.0.3`. The recipe is
-  unchanged from `0.0.1`. Upstream changed only CI, the dependency pins for
-  xsimd 14.3.0, poet v0.0.1 and polyfit v1.0.0, and an Apple-clang aarch64
-  arch-flag fix. `bindings/matlab` and the cmake floor are untouched.
+- `treeweave`: released `0.0.3`, tracking upstream tag `v0.0.3`. Upstream tag
+  `v0.0.2` is skipped. The recipe carries over from `0.0.1` with no change
+  beyond the version strings, because `bindings/matlab` and the cmake range
+  `3.25...3.31` are identical between the two tags. Upstream reworked its own
+  dependency handling: the manual xsimd clone is gone, and polyfit `v0.0.3` is
+  now the single pin site that carries xsimd and poet. Upstream also made IPO
+  opt-in and defaulted Debug to `-Og`. CMake absorbs every one of those
+  changes, so `compile.m` and `mip.yaml` need no edit.
 
 ## 2026-07-20
 
