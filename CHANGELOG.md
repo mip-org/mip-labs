@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-08-24
+
+- `treeweave`: released `0.0.3`, tracking upstream tag `v0.0.3`. The recipe is
+  unchanged from `0.0.1`. Upstream changed only CI, the dependency pins for
+  xsimd 14.3.0, poet v0.0.1 and polyfit v1.0.0, and an Apple-clang aarch64
+  arch-flag fix. `bindings/matlab` and the cmake floor are untouched.
+
 ## 2026-07-20
 
 - `treeweave`: released `0.0.1`. Migrated from branch-tracked `main` to
