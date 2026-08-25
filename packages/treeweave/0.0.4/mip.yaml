@@ -1,0 +1,51 @@
+name: treeweave
+description: "Piecewise-polynomial function approximator (adaptive tree of polynomial leaves) with a MATLAB MEX binding."
+version: "0.0.4"
+license: "BSD-3-Clause"
+homepage: "https://github.com/DiamonDinoia/treeweave"
+repository: "https://github.com/DiamonDinoia/treeweave"
+dependencies: []
+
+# Only the MATLAB binding directory goes on the path: treeweave.m (the classdef)
+# plus the mwrap-generated tw_*.m stubs and the compiled treeweave_mex.<ext> that
+# compile.m stages here. The rest of the fetched repo is C++ build input only.
+paths:
+  - path: "bindings/matlab"
+
+extra_paths:
+  examples:
+    - path: "bindings/matlab/examples"
+
+builds:
+  # One CMake-driven MEX build across all three supported arches. The C ABI does
+  # runtime ISA dispatch (TREEWEAVE_C_MULTIARCH), so a single portable baseline
+  # binary picks the best AVX/AVX-512/NEON kernel on the end-user CPU (on MSVC the
+  # ladder is SSE2/AVX/AVX2/AVX512 via /arch: flags).
+  #
+  # Compilers: treeweave is C++20, which the channel's default Linux toolchain
+  # (gcc-toolset-10) predates, so:
+  #   * macOS -> clang (Apple's native toolchain; what upstream CI uses);
+  #   * Linux -> default gcc, but compile.m switches to a gcc-toolset >= 11
+  #             (installed via setup: below) for the actual compile.
+  #
+  # windows_x86_64 builds with clang-cl, not cl.exe. On MSVC the multiarch fan-out
+  # is 24 dispatch TUs (SSE2/AVX/AVX2/AVX512 x 6 variants), and cl.exe does not
+  # finish optimizing even one of them in 40 minutes, so the 0.0.3 Windows build
+  # hit the 6-hour job cap. clang-cl compiles the same target in about 3 minutes
+  # and targets the same MSVC ABI, so the MEX is interchangeable. compile.m drives
+  # the VS2022 generator with -T ClangCL, which needs no PATH setup.
+  - architectures: [linux_x86_64, macos_arm64, windows_x86_64]
+    compile_script: compile.m
+    test_script: test_treeweave.m
+    compiler:
+      macos_arm64: clang
+    setup:
+      # ubi8 container ships neither cmake nor a C++20 gcc; install both. No
+      # bison/flex/m4 needed any more (mwrap is not run — the gateway is checked
+      # in upstream). el8's cmake (3.26) is within treeweave's 3.25..3.31 range.
+      # gcc-toolset-13 keeps the glibc-2.28 floor (only the compiler changes) and
+      # compile.m static-links its libstdc++.
+      linux:
+        - "dnf install -y cmake gcc-toolset-13"
+      # macOS runners ship cmake; clang is C++20-capable.
+      macos: []
