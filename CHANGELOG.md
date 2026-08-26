@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-08-25
+
+- `treeweave`: released `0.0.4`, tracking upstream tag `v0.0.4`. Windows now
+  builds with clang-cl through the Visual Studio 2022 generator
+  (`-T ClangCL`), the only recipe change beyond the version strings. `cl.exe`
+  does not finish optimizing one of the 24 multi-arch dispatch translation
+  units in 40 minutes, which is what pushed the `0.0.3` Windows build past the
+  6-hour job cap; that build was cancelled at 199 minutes. clang-cl emits the
+  same MSVC ABI and finishes the whole package in 9 minutes. The shipped MEX
+  imports only `MSVCP140.dll`, `VCRUNTIME140.dll` and `api-ms-win-crt-*`, with
+  no debug-CRT dependency. Linux takes 8 minutes and macOS 4.
+
 ## 2026-08-24
 
 - `treeweave`: released `0.0.3`, tracking upstream tag `v0.0.3`. Upstream tag
