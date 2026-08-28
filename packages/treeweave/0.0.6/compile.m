@@ -250,15 +250,21 @@ end
 end
 
 function add_llvm_bin_to_path()
-% Prepend the first directory that holds llvm-objcopy to PATH, if any. A no-op
-% when the tools already resolve, so a runner with LLVM on PATH is unaffected.
-if ~ispc || ~isempty(which_on_path('llvm-objcopy.exe'))
+% Prepend the first directory that holds both rename tools to PATH, if any. A
+% no-op when both already resolve, so a runner with LLVM on PATH is unaffected.
+% Upstream requires llvm-nm and llvm-objcopy, so a directory carrying only one
+% of them is not a candidate: taking it would mask the missing tool.
+tools = {'llvm-nm.exe', 'llvm-objcopy.exe'};
+if ~ispc || all(cellfun(@(t) ~isempty(which_on_path(t)), tools))
     return
 end
 candidates = {fullfile(getenv('ProgramFiles'), 'LLVM', 'bin'), ...
               fullfile(getenv('VSINSTALLDIR'), 'VC', 'Tools', 'Llvm', 'x64', 'bin')};
 for k = 1:numel(candidates)
-    if ~isempty(candidates{k}) && isfile(fullfile(candidates{k}, 'llvm-objcopy.exe'))
+    if isempty(candidates{k})
+        continue
+    end
+    if all(cellfun(@(t) isfile(fullfile(candidates{k}, t)), tools))
         setenv('PATH', [candidates{k} ';' getenv('PATH')]);
         fprintf('treeweave: added %s to PATH for the rung-symbol rename\n', candidates{k});
         return
