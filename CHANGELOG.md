@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-08-28
+
+- `treeweave`: released `0.0.6`, tracking upstream tag `v0.0.6`, and skipped
+  `0.0.5`. Windows moves from clang-cl back to `cl.exe`, the toolset MathWorks
+  supports for MEX. Two upstream changes make that possible. COFF gives symbols
+  no hidden visibility, so upstream now renames every defined external symbol of
+  an ISA rung and the linker can no longer substitute one rung's code for
+  another's; upstream measured 3379 to 3487 such symbols per rung under `cl.exe`
+  and 14 to 39 under clang-cl, so neither toolset was ever clean. And upstream's
+  polyfit rolls the ND Horner coefficient axes, which cut one four-shape
+  translation unit from 261.2 s to 2.30 s and retired the `cl.exe` compile-time
+  blowup the 0.0.4 recipe worked around. Upstream's own `cl.exe` MEX build takes
+  3m47s. `compile.m` also adds `-DTREEWEAVE_VERIFY_RUNGS=ON`, the rung-symbol
+  gate upstream runs, which is the first rung check this recipe has had on
+  Windows.
+
 ## 2026-08-25
 
 - `treeweave`: released `0.0.4`, tracking upstream tag `v0.0.4`. Windows now
