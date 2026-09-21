@@ -1,0 +1,12 @@
+# Tag-tracked at figpack_matlab v0.1.0: the release-dir name (0.1.0) is the
+# version and equals mip.yaml's `version:`; source.branch is the full tag
+# (v0.1.0). Do NOT add a `version:` field here.
+#
+# mip.yaml lives in the source repo, so the channel provides none.
+#
+# Nothing is trimmed. figure-dist/ is the compiled figpack-figure frontend,
+# vendored upstream, and is what lets a figure be viewed with nothing but
+# MATLAB — the package does not work without it.
+source:
+  git: "https://github.com/magland/figpack_matlab"
+  branch: "v0.1.0"

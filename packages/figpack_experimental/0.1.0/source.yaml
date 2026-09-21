@@ -1,0 +1,13 @@
+# Tag-tracked at figpack_experimental_matlab v0.1.0: the release-dir name
+# (0.1.0) is the version and equals mip.yaml's `version:`; source.branch is
+# the full tag (v0.1.0). Do NOT add a `version:` field here.
+#
+# mip.yaml lives in the source repo, so the channel provides none. It depends
+# on figpack, published on this channel.
+#
+# Nothing is trimmed. extension-dist/ is the compiled figpack-experimental
+# JavaScript and the web worker it loads at runtime, vendored upstream, and
+# the views do not render without it.
+source:
+  git: "https://github.com/magland/figpack_experimental_matlab"
+  branch: "v0.1.0"

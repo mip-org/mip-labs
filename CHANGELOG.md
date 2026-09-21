@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-09-21
+
+- `figpack`: added `0.1.0`, tracking tag `v0.1.0` of
+  [magland/figpack_matlab](https://github.com/magland/figpack_matlab). A
+  MATLAB implementation of
+  [figpack](https://github.com/flatironinstitute/figpack), which until now
+  existed only as a Python package. It writes the Zarr v2 store a figure is
+  made of from MATLAB itself and ships the compiled figpack-figure frontend,
+  so viewing a figure needs no Python and no network. `show` serves a figure
+  over a small local HTTP server built on a Java socket and stops when the
+  page's own button is clicked; `save` writes a static bundle; `upload`
+  publishes to the figpack cloud and returns a shareable URL.
+- `figpack_experimental`: added `0.1.0`, tracking tag `v0.1.0` of
+  [magland/figpack_experimental_matlab](https://github.com/magland/figpack_experimental_matlab),
+  depending on `figpack`. The MATLAB counterpart of figpack's experimental
+  extension package: SphereEmbedding, MEAMovie, LinearDecode,
+  MultiChannelIntervals, ClusterLens, FmriBold and EditableNotes. These views
+  are drawn by a figpack extension, a compiled JavaScript bundle that figpack
+  writes into a figure alongside the data. `LossyVideo` is left out: it needs
+  an MP4 encoder behind a custom zarr codec, which has no in-MATLAB
+  equivalent.
+
 ## 2026-08-28
 
 - `treeweave`: released `0.0.6`, tracking upstream tag `v0.0.6`, and skipped
