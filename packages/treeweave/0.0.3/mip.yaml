@@ -28,12 +28,11 @@ builds:
   #   * Linux -> default gcc, but compile.m switches to a gcc-toolset >= 11
   #             (installed via setup: below) for the actual compile.
   #
-  # windows_x86_64 is built: treeweave's mwrap gateway is now checked in upstream,
-  # so no platform runs mwrap (the MSVC link of its flex/bison globals — the old
-  # Windows blocker — is gone). MSVC compiles the checked-in gateway + the C++20 C
-  # ABI directly; compile.m drives the VS2022 generator. On MSVC, multiarch fans
-  # out across SSE2/AVX/AVX2/AVX512 (/arch: flags) and dispatches at runtime.
-  - architectures: [linux_x86_64, macos_arm64, windows_x86_64]
+  # windows_x86_64 is not built for this release: cl.exe does not finish
+  # optimizing the multiarch dispatch TUs, so every attempt ran into the 6-hour
+  # job cap and the daily scheduled build re-dispatched it. 0.0.4 (clang-cl) and
+  # 0.0.6 (cl.exe, after upstream fixes) ship Windows instead.
+  - architectures: [linux_x86_64, macos_arm64]
     compile_script: compile.m
     test_script: test_treeweave.m
     compiler:
