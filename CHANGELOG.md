@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-15
+
+- `treeweave`: dropped `windows_x86_64` from `0.0.3`. That build never finished (see the `0.0.4` entry), and the daily scheduled build kept re-dispatching it, tying up a Windows runner for about 4 hours a day until the job was cancelled or the runner was lost. Windows users get `0.0.4` or `0.0.6`. The edit changes the release's source hash, so `0.0.3` rebuilds once on Linux and macOS.
+
 ## 2026-09-21
 
 - `figpack`: added `0.1.0`, tracking tag `v0.1.0` of

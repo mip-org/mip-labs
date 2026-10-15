@@ -55,7 +55,8 @@ links the MEX. `compile.m` drives that build and stages the outputs into
 | --- | --- | --- |
 | `linux_x86_64` | gcc-toolset ≥ 11 | C++20 needs gcc ≥ 11; the channel's default gcc-toolset-10 is too old, so a newer toolset is installed at build time. |
 | `macos_arm64` | Apple clang | `apple-m1` baseline (Apple Silicon). |
-| `windows_x86_64` | MSVC (VS 2022) | C++20; SSE2 baseline, dispatch ladder up to AVX-512 via `/arch:` flags. |
+
+No `windows_x86_64` build ships for this release: `cl.exe` does not finish compiling the multiarch dispatch translation units within the 6-hour job cap. Use `0.0.4` or later on Windows.
 
 **Static linking.** The MEX statically links the treeweave C ABI and (on
 Linux/GNU) `-static-libstdc++ -static-libgcc`, so each binary is self-contained:
