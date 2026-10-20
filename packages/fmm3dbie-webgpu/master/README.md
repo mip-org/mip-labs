@@ -32,7 +32,7 @@ The GPU covers the Helmholtz impedance and Neumann problems. fmm3dbie's pure-MAT
 | | fmm3dbie | fmm3dbie-webgpu |
 |---|---|---|
 | `surfer` class (`area`, `volume`, `vals2coefs`, transforms, `merge`, ...) | yes | yes, unmodified |
-| `surfer` methods that use `ismembertol` (`oversample`, `+byindex`) | yes | once numbl has `ismembertol` |
+| `surfer.oversample` (uses `ismembertol`, in numbl since 2026-10-20) | yes | yes |
 | `+koorn`, `+polytens`, `helm3d.kern`, `helm3d.green` | yes | yes, pure MATLAB |
 | `geometries.*` (sphere, ellipsoid, stellarator, torus, disk) | yes | no (they call the MEX); `quad_sphere` stands in for the sphere |
 | Gmsh / `.go3` loaders | yes | pure MATLAB, not tested |
