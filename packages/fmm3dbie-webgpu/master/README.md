@@ -37,7 +37,7 @@ The GPU covers the Helmholtz impedance and Neumann problems. fmm3dbie's pure-MAT
 | `geometries.*` (sphere, ellipsoid, stellarator, torus, disk) | yes | no (they call the MEX); `quad_sphere` stands in for the sphere |
 | Gmsh / `.go3` loaders | yes | pure MATLAB, not tested |
 | `multiscale_mesher` | yes | no |
-| `helm3d.fmm` (FMM3D) | yes | no |
+| `helm3d.fmm`, `lap3d.fmm`, `stok3d.fmm`, `em3d.fmm` | yes | yes, through the `fmm3d` package (a dependency; its numbl build is single-threaded WebAssembly) |
 
 ### Differences within the supported solvers
 

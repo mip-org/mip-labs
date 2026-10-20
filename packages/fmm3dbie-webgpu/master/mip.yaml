@@ -4,7 +4,10 @@ version:
 license: "Apache-2.0"
 homepage: "https://github.com/fastalgorithms/fmm3dbie"
 repository: "https://github.com/fastalgorithms/fmm3dbie"
-dependencies: []
+# fmm3d (its numbl_wasm build) makes fmm3dbie's FMM wrappers work:
+# helm3d.fmm, lap3d.fmm, stok3d.fmm, em3d.fmm.
+dependencies:
+  - mip-org/core/fmm3d
 
 # matlab/         upstream fmm3dbie MATLAB code, with +helm3d/+impedance and
 #                 +helm3d/+neumann solver/eval replaced by GPU versions
