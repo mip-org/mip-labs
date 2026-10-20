@@ -1,0 +1,22 @@
+# Upstream fmm3dbie supplies the MATLAB side (the surfer class, +koorn,
+# +polytens, the +helm3d kernels); this release directory overlays the WebGPU
+# versions of helm3d.impedance / helm3d.neumann and the numbl GPU gateway
+# (matlab/webgpu). The repo has no release tags, so we track master; the
+# release-dir name (master) equals source.branch. Do NOT add a `version:` field.
+#
+# Nothing is compiled, so the Fortran (src/, the FMM3D submodule), the other
+# language bindings and the example/test/doc trees are removed.
+source:
+  git: "https://github.com/fastalgorithms/fmm3dbie"
+  branch: "master"
+  remove_dirs:
+    - src
+    - FMM3D
+    - lib
+    - lib-static
+    - python
+    - docs
+    - examples
+    - test
+    - perf-test
+    - geometries

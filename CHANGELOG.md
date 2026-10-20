@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-20
+
+- `fmm3dbie-webgpu`: added `master`, tracking fmm3dbie's `master`. A `numbl_wasm`-only package that ships fmm3dbie's MATLAB code with `helm3d.impedance` and `helm3d.neumann` `solver`/`eval` replaced by versions with the same signatures that run on WebGPU in numbl in a browser (through the `gpu` global of `.numbl.js` files, in numbl `main` since 2026-10-20). Single precision, quad patches of one order, dense far field. Nothing is compiled; the GPU backend is a prebuilt bundle of `backend/*.ts`.
+
 ## 2026-10-15
 
 - `treeweave`: dropped `windows_x86_64` from `0.0.3`. That build never finished (see the `0.0.4` entry), and the daily scheduled build kept re-dispatching it, tying up a Windows runner for about 4 hours a day until the job was cancelled or the runner was lost. Windows users get `0.0.4` or `0.0.6`. The edit changes the release's source hash, so `0.0.3` rebuilds once on Linux and macOS.
