@@ -2,6 +2,7 @@
 
 ## 2026-10-20
 
+- `fmm3dbie-webgpu`: README now tabulates what is covered compared with fmm3dbie and gives a speed comparison against native fmm3dbie in MATLAB.
 - `fmm3dbie-webgpu`: added `master`, tracking fmm3dbie's `master`. A `numbl_wasm`-only package that ships fmm3dbie's MATLAB code with `helm3d.impedance` and `helm3d.neumann` `solver`/`eval` replaced by versions with the same signatures that run on WebGPU in numbl in a browser (through the `gpu` global of `.numbl.js` files, in numbl `main` since 2026-10-20). Single precision, quad patches of one order, dense far field. Nothing is compiled; the GPU backend is a prebuilt bundle of `backend/*.ts`.
 
 ## 2026-10-15
