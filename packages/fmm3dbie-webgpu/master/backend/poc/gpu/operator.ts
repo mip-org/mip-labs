@@ -576,7 +576,32 @@ export class Operator {
   }
 
   /** Far and near parts of the selected kernels at a target set. sel: 6 entries in {0, 1, 2}; reqs: [kernel, density] pairs. */
-  private async applyAt(set: TargetSet, qa: CVec, qb: CVec | null, sel: number[], reqs: [number, number][]): Promise<Float32Array> {
+  /**
+   * The oversampled sources of the far field (positions, normals and smooth
+   * weights, each (3, N) or (N) row-major as Surface.oversampled returns them)
+   * and the matrix (npolsO, npols) that maps a patch's node values to its
+   * oversampled node values. For computing the far field elsewhere (an FMM).
+   */
+  farGeometry() {
+    const ov = this.surf.oversampled(this.nover);
+    const pr = this.wall.pairs;
+    return {
+      x: ov.x, n: ov.n, w: ov.w, overMat: this.overMat, npols: this.npols, npolsO: this.npolsO, npatches: this.surf.npatches,
+      rowPtr: pr.rowPtr, pairP: Int32Array.from(pr.pairP.subarray(0, pr.npairs)),
+    };
+  }
+
+  /**
+   * applyAt at the surface nodes. far = 'dense': the far field is the dense
+   * sum on the GPU, as in applyK. far = 'none': only the near quadrature, for
+   * a far field computed elsewhere (an FMM over all oversampled nodes, minus
+   * the smooth rule on each target's near patches; see farGeometry).
+   */
+  async applyAtSurface(qa: CVec, qb: CVec | null, sel: number[], reqs: [number, number][], far: 'dense' | 'none'): Promise<Float32Array> {
+    return this.applyAt(this.wall, qa, qb, sel, reqs, far);
+  }
+
+  private async applyAt(set: TargetSet, qa: CVec, qb: CVec | null, sel: number[], reqs: [number, number][], far: 'dense' | 'none' = 'dense'): Promise<Float32Array> {
     const { gpu, npts, npolsO } = this;
     const N = npolsO * this.surf.npatches;
     const sq = new Float32Array(4 * N);
@@ -590,21 +615,23 @@ export class Operator {
     const out = set.n === this.wall.n ? this.out : gpu.storage(6 * 8 * set.n);
     gpu.clear(out);
     const selmask = sel.reduce((acc, s, m) => acc | (s << (4 * m)), 0);
-    const densePipe = await gpu.pipeline('dense', DENSE_APPLY, 'dense_apply');
-    const group = gpu.bind(densePipe, [this.uniformDense, set.targ, this.srcgeo, this.srcq, set.rowPtr, set.pairP, out]);
-    const pacer = new Pacer(this.pace, Math.max(1, Math.floor(4e8 / (set.n * npolsO * 60))));
-    const np = this.surf.npatches;
-    let j0 = 0;
-    while (j0 < np) {
-      const n = pacer.next(np - j0);
-      const t0 = now();
-      const uw = new UniformWriter(6);
-      uw.u32(set.n).u32(j0).u32(j0 + n).u32(npolsO).f32(this.k).u32(selmask);
-      gpu.write(this.uniformDense, new Uint8Array(uw.bytes));
-      gpu.dispatch(densePipe, group, Math.ceil(set.n / DENSE_WG));
-      await gpu.sync();
-      pacer.record(n, now() - t0);
-      j0 += n;
+    if (far === 'dense') {
+      const densePipe = await gpu.pipeline('dense', DENSE_APPLY, 'dense_apply');
+      const group = gpu.bind(densePipe, [this.uniformDense, set.targ, this.srcgeo, this.srcq, set.rowPtr, set.pairP, out]);
+      const pacer = new Pacer(this.pace, Math.max(1, Math.floor(4e8 / (set.n * npolsO * 60))));
+      const np = this.surf.npatches;
+      let j0 = 0;
+      while (j0 < np) {
+        const n = pacer.next(np - j0);
+        const t0 = now();
+        const uw = new UniformWriter(6);
+        uw.u32(set.n).u32(j0).u32(j0 + n).u32(npolsO).f32(this.k).u32(selmask);
+        gpu.write(this.uniformDense, new Uint8Array(uw.bytes));
+        gpu.dispatch(densePipe, group, Math.ceil(set.n / DENSE_WG));
+        await gpu.sync();
+        pacer.record(n, now() - t0);
+        j0 += n;
+      }
     }
     if (set.pairs.npairs > 0 && reqs.length > 0) {
       const sparsePipe = await gpu.pipeline('sparse', SPARSE_APPLY, 'sparse_apply');

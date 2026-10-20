@@ -24,10 +24,13 @@
 //     (npts), v (1,npts); kernel 's', 'd', 'sprime', 's_kappa',
 //     'sprime_kappa' or 'dprime_diff' (D'_k - D'_kappa), kappa = 1i*abs(zk)
 //
-//   [sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs, eps_gmres, maxit, lam)
+//   [sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs, eps_gmres, maxit, lam[, far, hfmm])
 //     GMRES for fmm3dbie's helm_rpcomb_imp equation du/dn + 1i*zk*lam*u = rhs,
 //     u = S_k[sigma] + 1i*alpha*D_k[phi1], phi1 = S_kappa[sigma]; lam real
 //     scalar. sigma, phi1 (1,npts); errs (niter,1) relative residuals.
+//     far = 'dense' (default): far field by the dense GPU sum; far = 'fmm':
+//     by hfmm3d (pass @hfmm3d as hfmm), minus the smooth rule on near
+//     patches (in double precision, here).
 //   u = fmm3dbie_gpu('surface_eval', h, targ, sigma, phi1)
 //     u = S_k[sigma] + 1i*alpha*D_k[phi1] at off-surface targets targ (3,n);
 //     u (n,1)
@@ -153,16 +156,27 @@ function complexColumn(v) {
   return RTV.tensor(t.data, [t.data.length, 1], t.imag);
 }
 
+// GMRES runs here, in numbl's worker, applying the operator through GPU
+// passes; the far field comes from the GPU's dense sum or from an FMM
+// (_fmm3dbie_gpu_solve.numbl.js).
 function surfaceSolve(args, nargout) {
-  var r = gpu.call("fmm3dbie_gpu", "surface_solve", {
-    id: realScalar(args[1], "h"),
-    rhs: complexInterleaved(args[2], "rhs"),
-    eps: realScalar(args[3], "eps_gmres"),
-    maxit: realScalar(args[4], "maxit"),
-    lam: realScalar(args[5], "lam"),
-  });
-  var out = [complexRow(r.sigma), complexRow(r.phi1)];
-  if (nargout > 2) out.push(RTV.tensor(new Float64Array(r.errs), [r.errs.length, 1]));
+  var id = realScalar(args[1], "h");
+  var rhs = complexInterleaved(args[2], "rhs");
+  var eps = realScalar(args[3], "eps_gmres");
+  var maxit = realScalar(args[4], "maxit");
+  var lam = realScalar(args[5], "lam");
+  var far = args.length > 6 ? str(args[6], "far") : "dense";
+  if (far !== "dense" && far !== "fmm") throw new RuntimeError("fmm3dbie_gpu: far must be 'dense' or 'fmm'");
+  if (far === "fmm" && args.length < 8) throw new RuntimeError("fmm3dbie_gpu: far = 'fmm' needs the hfmm3d handle");
+  var info = gpu.call("fmm3dbie_gpu", "surface_info", { id: id });
+  if (rhs.length !== info.wts.length * 2)
+    throw new RuntimeError("fmm3dbie_gpu: rhs must have " + info.wts.length + " entries");
+  var geo = far === "fmm" ? gpu.call("fmm3dbie_gpu", "surface_farGeometry", { id: id }) : null;
+  var K = importJS("_fmm3dbie_gpu_solve").makeOperator(id, info, geo, far, far === "fmm" ? args[7] : null, Math.min(1e-7, eps / 10));
+  var r = importJS("_fmm3dbie_gpu_gmres").gmres(function (x) { return K(lam, x); }, rhs, info.wts, info.zid, eps, maxit);
+  var phi1 = gpu.call("fmm3dbie_gpu", "surface_sKappa", { id: id, sigma: r.x }).phi1;
+  var out = [complexRow(r.x), complexRow(phi1)];
+  if (nargout > 2) out.push(RTV.tensor(new Float64Array(r.residuals), [r.residuals.length, 1]));
   if (nargout > 3) out.push(RTV.num(r.rres));
   return nargout <= 1 ? out[0] : out.slice(0, Math.max(nargout, 1));
 }
@@ -217,11 +231,21 @@ register({
             nargs(args, 4, "v = fmm3dbie_gpu('surface_apply', h, kernel, sigma)");
             return surfaceApply(args);
           case "surface_solve":
-            nargs(args, 6, "[sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs, eps_gmres, maxit, lam)");
+            if (args.length !== 6 && args.length !== 7 && args.length !== 8)
+              throw new RuntimeError("usage: [sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs, eps_gmres, maxit, lam[, far, hfmm])");
             return surfaceSolve(args, nargout);
           case "surface_eval":
             nargs(args, 5, "u = fmm3dbie_gpu('surface_eval', h, targ, sigma, phi1)");
             return surfaceEval(args);
+          case "surface_compare_far": {
+            // testing: [d0 d1 d2 d4 d23 d5] = fmm3dbie_gpu('surface_compare_far', h, x, phi1, phi2, @hfmm3d)
+            var cid = realScalar(args[1], "h");
+            var cinfo = gpu.call("fmm3dbie_gpu", "surface_info", { id: cid });
+            var cgeo = gpu.call("fmm3dbie_gpu", "surface_farGeometry", { id: cid });
+            var d = importJS("_fmm3dbie_gpu_solve").comparePasses(cid, cinfo, cgeo, args[5], args.length > 6 ? realScalar(args[6], "eps") : 1e-9,
+              complexInterleaved(args[2], "x"), complexInterleaved(args[3], "phi1"), complexInterleaved(args[4], "phi2"));
+            return RTV.tensor(new Float64Array(d), [1, d.length]);
+          }
           case "h3d_slp": {
             nargs(args, 5, "pot = fmm3dbie_gpu('h3d_slp', zk, src, q, targ)");
             var s = points(args[2], "src");

@@ -15,7 +15,7 @@ import { Surface } from './poc/surface.ts';
 import { Gpu } from './poc/gpu/device.ts';
 import { Operator, type OperatorOptions } from './poc/gpu/operator.ts';
 
-type Entry = { kind: 'points'; obj: PointSum } | { kind: 'surface'; obj: Operator; npts: number };
+type Entry = { kind: 'points'; obj: PointSum } | { kind: 'surface'; obj: Operator; npts: number; surf: Surface };
 
 const handles = new Map<number, Entry>();
 let nextId = 1;
@@ -81,11 +81,16 @@ export const backend = {
     const progress = () => {
       if (nchunks++ === 0) tFirst = performance.now();
     };
-    const op = new Operator(gpuFor(device), surf, a.zk, a.alpha, a.lam, a.ifinout, { progress, ...(a.opts ?? {}) });
+    // Oversample to order p + 3, not the proof of concept's p + 2: Gauss-Legendre
+    // grids of odd and even size share no points, so no oversampled node can
+    // coincide with a surface node (both grids have the patch center when
+    // p and p + 2 are even). The FMM far field and its near-smooth
+    // subtraction sum over a target's own patch and need this.
+    const op = new Operator(gpuFor(device), surf, a.zk, a.alpha, a.lam, a.ifinout, { progress, nover: a.norder + 3, ...(a.opts ?? {}) });
     const info = await op.setup();
     const t1 = performance.now();
     return {
-      ...add({ kind: 'surface', obj: op, npts: surf.npts }),
+      ...add({ kind: 'surface', obj: op, npts: surf.npts, surf }),
       info: { ...info, nchunks, secondsToFirstChunk: ((tFirst || t1) - t0) / 1000, secondsTotal: (t1 - t0) / 1000 },
     };
   },
@@ -103,17 +108,45 @@ export const backend = {
   },
 
   /**
-   * Solve fmm3dbie's helm_rpcomb_imp equation with rhs (interleaved complex,
-   * npts) and the impedance lam (a real scalar; the near weights do not
-   * depend on it). GMRES runs here in double precision with the weighted
-   * inner product of fmm3dbie.
+   * One pass of fmm3dbie's helm_rpcomb_imp operator at the surface nodes:
+   * the selected kernels (sel, 6 entries in {0, 1: qa, 2: qb}) applied to the
+   * densities qa, qb (interleaved complex, npts), with near quadrature reqs
+   * ([kernel, density] pairs). far = 'dense': far field by the dense GPU sum;
+   * far = 'none': near quadrature only, for a far field computed on the
+   * numbl side (an FMM). Returns F, (6, npts) interleaved complex, kernel-major.
    */
-  async surface_solve(_device: GPUDevice, a: { id: number; rhs: Float64Array; eps: number; maxit: number; lam: number }) {
+  async surface_applyAt(
+    _device: GPUDevice,
+    a: { id: number; qa: Float64Array; qb: Float64Array | null; sel: number[]; reqs: [number, number][]; far: 'dense' | 'none' },
+  ) {
     const e = get(a.id, 'surface') as { obj: Operator; npts: number };
-    if (a.rhs.length !== 2 * e.npts) throw new Error(`fmm3dbie_gpu: rhs must have ${e.npts} entries`);
-    e.obj.lam = a.lam;
-    const r = await e.obj.solve(a.rhs, a.eps, a.maxit);
-    return { sigma: r.x, phi1: r.phi1, niter: r.niter, rres: r.rres, errs: Float64Array.from(r.residuals), seconds: r.seconds };
+    if (a.qa.length !== 2 * e.npts || (a.qb && a.qb.length !== 2 * e.npts)) throw new Error(`fmm3dbie_gpu: densities must have ${e.npts} entries`);
+    if (a.far !== 'dense' && a.far !== 'none') throw new Error(`fmm3dbie_gpu: far must be 'dense' or 'none'`);
+    return { F: await e.obj.applyAtSurface(a.qa, a.qb, a.sel, a.reqs, a.far) };
+  },
+
+  /** The oversampled far-field sources and the oversampling matrix (see Operator.farGeometry). */
+  async surface_farGeometry(_device: GPUDevice, a: { id: number }) {
+    const e = get(a.id, 'surface') as { obj: Operator };
+    return e.obj.farGeometry();
+  },
+
+  /**
+   * What the solve on the numbl side needs: the weights of fmm3dbie's inner
+   * product, the identity term zid, the operator's parameters and the nodes.
+   */
+  async surface_info(_device: GPUDevice, a: { id: number }) {
+    const e = get(a.id, 'surface') as { obj: Operator; npts: number; surf: Surface };
+    const op = e.obj;
+    // srcvals: (12, npts) row-major (xyz, r_u, r_v, unit normal)
+    return { wts: Float64Array.from(e.surf.wts), zid: op.zid(), k: op.k, alpha: op.alpha, ifinout: op.ifinout, srcvals: e.surf.srcvals };
+  },
+
+  /** phi1 = S_kappa[sigma] on the surface, kappa = i|k|. */
+  async surface_sKappa(_device: GPUDevice, a: { id: number; sigma: Float64Array }) {
+    const e = get(a.id, 'surface') as { obj: Operator; npts: number };
+    if (a.sigma.length !== 2 * e.npts) throw new Error(`fmm3dbie_gpu: sigma must have ${e.npts} entries`);
+    return { phi1: await e.obj.sKappa(a.sigma) };
   },
 
   /**

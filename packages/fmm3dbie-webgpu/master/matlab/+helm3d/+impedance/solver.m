@@ -12,6 +12,10 @@ function [densities, varargout] = solver(S, zlams, rhs, eps, zk, alpha, opts)
 % Differences from fmm3dbie:
 %  - quad patches (iptype 11) of a single order; zk real; zlams a real scalar
 %  - single precision on the GPU, so eps_gmres below 1e-6 is raised to 1e-6
+%  - opts.far_field: 'dense' (default) sums the far field directly on the GPU;
+%    'fmm' (experimental) uses hfmm3d from the fmm3d package, single-threaded
+%    WebAssembly. Not yet reliable: fmm3d's numbl build is inaccurate for
+%    complex wavenumbers above about 2000 sources, which the i|zk| kernels need.
 %  - Q holds the GPU state (Q.gpu_handle) instead of quadrature weights. Pass
 %    it as opts.quadrature_correction to a later solve (with the same S, zk,
 %    alpha and ifout) or as opts.precomp_quadrature to helm3d.impedance.eval,
@@ -25,6 +29,14 @@ function [densities, varargout] = solver(S, zlams, rhs, eps, zk, alpha, opts)
   if isfield(opts, 'maxit'), maxit = opts.maxit; end
   ifout = 1;
   if isfield(opts, 'ifout'), ifout = opts.ifout; end
+  far_field = 'dense';
+  if isfield(opts, 'far_field'), far_field = opts.far_field; end
+  if ~any(strcmp(far_field, {'dense', 'fmm'}))
+    error('helm3d.impedance.solver: opts.far_field must be ''dense'' or ''fmm''');
+  end
+  if strcmp(far_field, 'fmm')
+    warning('helm3d.impedance.solver: far_field = ''fmm'' is experimental and may be inaccurate (see help)');
+  end
 
   norder = check_surface(S);
   if ~isreal(zk) || ~isscalar(zk)
@@ -54,7 +66,11 @@ function [densities, varargout] = solver(S, zlams, rhs, eps, zk, alpha, opts)
     Q = struct('gpu_handle', h, 'zk', zk, 'alpha', alpha, 'ifout', ifout, 'npts', S.npts);
   end
   try
-    [sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs(:), eps_gmres, maxit, lam);
+    if strcmp(far_field, 'fmm')
+      [sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs(:), eps_gmres, maxit, lam, 'fmm', @hfmm3d);
+    else
+      [sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs(:), eps_gmres, maxit, lam, 'dense');
+    end
   catch err
     if ~reuse, fmm3dbie_gpu('free', h); end
     rethrow(err);
