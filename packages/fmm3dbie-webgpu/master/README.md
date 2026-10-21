@@ -48,7 +48,7 @@ The GPU covers the Helmholtz impedance and Neumann problems. fmm3dbie's pure-MAT
 | Wavenumber | real or complex | real |
 | Impedance `zlams` | complex, varying per point | real constant |
 | Precision | double; tolerances to about 1e-12 | single on the GPU; attainable accuracy about 1e-6, and GMRES tolerances below 1e-6 are raised to 1e-6 with a warning |
-| Far field | FMM, O(N) | direct sum, O(N²); practical up to roughly 10⁵ points, with the near-field weights also having to fit in GPU memory |
+| Far field | FMM, O(N) | in the solvers, direct sum on the GPU, O(N²) (default), or `opts.far_field = 'fmm'`: `hfmm3d` from the fmm3d package, O(N) but single-threaded WebAssembly; in eval, direct sum. The near-field weights must fit in GPU memory either way, which limits problems to a few times 10⁴ points |
 | Evaluation targets | on or off the surface | off the surface only |
 | Reusing the quadrature | `Q` holds the weights | `Q` holds the GPU state (`Q.gpu_handle`); pass it as `opts.quadrature_correction` (solver) or `opts.precomp_quadrature` (eval), and release it with `fmm3dbie_gpu('free', Q.gpu_handle)` |
 | Platform | MATLAB on Linux, macOS, Windows; CPU threads (OpenMP) | numbl in a browser with WebGPU |
@@ -64,7 +64,9 @@ We compared the two on `example.m` (sound-hard sphere, ka = 6, quad patches of o
 | 2,646 | solve 7.2 to 9.2 s, eval 0.6 s | solve 3.1 s, eval 0.85 s | 9.1e-6 / 9.1e-6 |
 | 10,584 | solve 37 s, eval 0.7 s | solve 12.4 s, eval 0.5 s | 1.2e-6 / 1.0e-6 |
 
-Both take 9 GMRES iterations. The near-field quadrature costs about the same on both (about 2.6 s at 2,646 points); the difference is in GMRES, where fmm3dbie's FMM-based matrix-vector products take about 5 to 6 s in all and the dense products on the GPU about 0.4 s. At larger sizes the FMM's O(N) scaling will win. Note that on this machine MATLAB's `maxNumCompThreads` defaults to 2 and the fmm3dbie MEX follows it; with that default, fmm3dbie took 13.5 s and 59 s. A discrete GPU would widen the gap, and a CPU with more cores would narrow it.
+Both take 9 GMRES iterations. The near-field quadrature costs about the same on both (about 2.6 s at 2,646 points); the difference is in GMRES, where fmm3dbie's FMM-based matrix-vector products take about 5 to 6 s in all and the dense products on the GPU about 0.4 s.
+
+With `opts.far_field = 'fmm'` the same solves give the same iteration counts and errors, but each GMRES iteration makes four single-threaded `hfmm3d` calls (about 0.6 s each at 2,646 points, against about 0.05 s for a dense iteration on the GPU). On this laptop the estimated crossover is around 1.5 × 10⁵ points, beyond what fits in GPU memory, so `'dense'` stays the default. Note that on this machine MATLAB's `maxNumCompThreads` defaults to 2 and the fmm3dbie MEX follows it; with that default, fmm3dbie took 13.5 s and 59 s. A discrete GPU would widen the gap, and a CPU with more cores would narrow it.
 
 ## Layout
 
