@@ -5,9 +5,11 @@ license: "Apache-2.0"
 homepage: "https://github.com/fastalgorithms/fmm3dbie"
 repository: "https://github.com/fastalgorithms/fmm3dbie"
 # fmm3d (its numbl_wasm build) makes fmm3dbie's FMM wrappers work:
-# helm3d.fmm, lap3d.fmm, stok3d.fmm, em3d.fmm.
+# helm3d.fmm, lap3d.fmm, stok3d.fmm, em3d.fmm. flam (pure MATLAB) is for
+# fast direct solvers with fmm3dbie's byindex helpers (rskelf).
 dependencies:
   - mip-org/core/fmm3d
+  - mip-org/core/flam
 
 # matlab/         upstream fmm3dbie MATLAB code, with +helm3d/+impedance and
 #                 +helm3d/+neumann solver/eval replaced by GPU versions

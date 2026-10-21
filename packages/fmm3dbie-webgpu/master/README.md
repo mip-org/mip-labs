@@ -11,7 +11,7 @@ It runs in numbl in a browser with WebGPU (recent Chrome or Edge; on Linux, Chro
 
 ## Coverage compared with fmm3dbie
 
-The GPU covers the Helmholtz impedance and Neumann problems. fmm3dbie's pure-MATLAB code runs unmodified; anything that needs the fmm3dbie MEX fails with a message naming what is supported.
+The GPU covers the Helmholtz impedance and Neumann problems. fmm3dbie's pure-MATLAB code runs unmodified. A few small MEX routines are ported to JavaScript (quad patches only): `getnear`, `get_oversampling_parameters` and the radpp profile evaluator; they give the same results as the MEX. Anything else that needs the fmm3dbie MEX fails with a message naming what is supported.
 
 ### Solvers and evaluators
 
@@ -24,7 +24,8 @@ The GPU covers the Helmholtz impedance and Neumann problems. fmm3dbie's pure-MAT
 | `stok3d` (velocity, traction) | yes | no |
 | `em3d` (PEC with NRCCIE, dielectric with Müller) | yes | no |
 | `belpde` (Laplace- and Helmholtz-Beltrami) | yes | no |
-| `kernel3d`, `surfermat`, `surfermatapply`, `surferkerneval` | yes | no (they need the MEX for quadrature corrections) |
+| `kernel3d`, `surfermat`, `surfermatapply`, `surferkerneval` | yes | smooth parts only (`forcesmooth`); the near quadrature (e.g. `getnearquad_radpp`) needs the MEX |
+| FLAM (`rskelf` etc.) | separate package | yes, through the `flam` package (a dependency) |
 | `get_quadrature_correction` | yes | no (the solvers return a GPU handle instead) |
 
 ### Geometry and utilities
@@ -70,7 +71,7 @@ Both take 9 GMRES iterations. The near-field quadrature costs about the same on 
 - `matlab/+helm3d/+impedance`, `matlab/+helm3d/+neumann`: the GPU versions of `solver.m` and `eval.m`, replacing upstream's.
 - `matlab/webgpu/fmm3dbie_gpu.numbl.js`: the gateway, called by the solvers; its header documents the lower-level interface (dense point sums, layer potentials, solve, eval, handles).
 - `matlab/webgpu/_fmm3dbie_gpu_backend.numbl.js`: the GPU code, bundled from `backend/*.ts` by `backend/build.mjs`. It runs in numbl's GPU helper worker (the `gpu` global of `.numbl.js` files). The near quadrature, far-field sum and GMRES in `backend/poc/` come from an earlier WebGPU proof of concept for fmm3dbie's impedance solver.
-- `matlab/webgpu/fmm3dbie_routs.numbl.js`: a stand-in for the fmm3dbie MEX that reports what is not supported.
+- `matlab/webgpu/fmm3dbie_routs.numbl.js`: a stand-in for the fmm3dbie MEX, with JavaScript ports of a few small routines (`get_rfacs`, `findnear`, `get_iquad_rsc`, `get_far_order`, `vpp_eval_vec`); it reports what is not supported otherwise.
 
 Upstream's Fortran (`src/`, the FMM3D submodule) and its example, test and documentation trees are not shipped.
 
