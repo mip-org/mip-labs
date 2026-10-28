@@ -195,70 +195,61 @@ function nargs(args, n, usage) {
   if (args.length !== n) throw new RuntimeError("usage: " + usage);
 }
 
-register({
-  resolve: function (argTypes, nargout) {
-    var outs = [];
-    for (var i = 0; i < Math.max(1, nargout); i++) outs.push({ kind: "unknown" });
-    return {
-      outputTypes: outs,
-      apply: function (args, nargout) {
-        if (!gpu) throw new RuntimeError("fmm3dbie_gpu: WebGPU is not available (browser only)");
-        var cmd = args.length > 0 ? str(args[0], "command") : "";
-        switch (cmd) {
-          case "create": {
-            nargs(args, 5, "h = fmm3dbie_gpu('create', zk, src, srcn, targ)");
-            var src = points(args[2], "src");
-            var nrm = points(args[3], "srcn");
-            if (nrm.length !== src.length) throw new RuntimeError("fmm3dbie_gpu: src and srcn sizes differ");
-            return create(realScalar(args[1], "zk"), src, nrm, points(args[4], "targ"));
-          }
-          case "apply":
-            nargs(args, 4, "pot = fmm3dbie_gpu('apply', h, kind, q)");
-            return apply(realScalar(args[1], "h"), str(args[2], "kind"), args[3]);
-          case "free":
-            nargs(args, 2, "fmm3dbie_gpu('free', h)");
-            free(realScalar(args[1], "h"));
-            return RTV.tensor(new Float64Array(0), [0, 0]);
-          case "freeall":
-            gpu.call("fmm3dbie_gpu", "freeall", {});
-            return RTV.tensor(new Float64Array(0), [0, 0]);
-          case "count":
-            return gpu.call("fmm3dbie_gpu", "count", {});
-          case "surface_create":
-            nargs(args, 7, "h = fmm3dbie_gpu('surface_create', norder, srcvals, zk, alpha, lam, ifinout)");
-            return surfaceCreate(args, nargout);
-          case "surface_apply":
-            nargs(args, 4, "v = fmm3dbie_gpu('surface_apply', h, kernel, sigma)");
-            return surfaceApply(args);
-          case "surface_solve":
-            if (args.length !== 6 && args.length !== 7 && args.length !== 8)
-              throw new RuntimeError("usage: [sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs, eps_gmres, maxit, lam[, far, hfmm])");
-            return surfaceSolve(args, nargout);
-          case "surface_eval":
-            nargs(args, 5, "u = fmm3dbie_gpu('surface_eval', h, targ, sigma, phi1)");
-            return surfaceEval(args);
-          case "surface_compare_far": {
-            // testing: [d0 d1 d2 d4 d23 d5] = fmm3dbie_gpu('surface_compare_far', h, x, phi1, phi2, @hfmm3d)
-            var cid = realScalar(args[1], "h");
-            var cinfo = gpu.call("fmm3dbie_gpu", "surface_info", { id: cid });
-            var cgeo = gpu.call("fmm3dbie_gpu", "surface_farGeometry", { id: cid });
-            var d = importJS("_fmm3dbie_gpu_solve").comparePasses(cid, cinfo, cgeo, args[5], args.length > 6 ? realScalar(args[6], "eps") : 1e-9,
-              complexInterleaved(args[2], "x"), complexInterleaved(args[3], "phi1"), complexInterleaved(args[4], "phi2"));
-            return RTV.tensor(new Float64Array(d), [1, d.length]);
-          }
-          case "h3d_slp": {
-            nargs(args, 5, "pot = fmm3dbie_gpu('h3d_slp', zk, src, q, targ)");
-            var s = points(args[2], "src");
-            var id = create(realScalar(args[1], "zk"), s, null, points(args[4], "targ"));
-            try {
-              return apply(id, "slp", args[3]);
-            } finally {
-              free(id);
-            }
-          }
-        }
-        throw new RuntimeError("fmm3dbie_gpu: unknown command '" + cmd + "'");
-      },
-    };
-  },
+register(function (args, nargout) {
+  if (!gpu) throw new RuntimeError("fmm3dbie_gpu: WebGPU is not available (browser only)");
+  var cmd = args.length > 0 ? str(args[0], "command") : "";
+  switch (cmd) {
+    case "create": {
+      nargs(args, 5, "h = fmm3dbie_gpu('create', zk, src, srcn, targ)");
+      var src = points(args[2], "src");
+      var nrm = points(args[3], "srcn");
+      if (nrm.length !== src.length) throw new RuntimeError("fmm3dbie_gpu: src and srcn sizes differ");
+      return create(realScalar(args[1], "zk"), src, nrm, points(args[4], "targ"));
+    }
+    case "apply":
+      nargs(args, 4, "pot = fmm3dbie_gpu('apply', h, kind, q)");
+      return apply(realScalar(args[1], "h"), str(args[2], "kind"), args[3]);
+    case "free":
+      nargs(args, 2, "fmm3dbie_gpu('free', h)");
+      free(realScalar(args[1], "h"));
+      return RTV.tensor(new Float64Array(0), [0, 0]);
+    case "freeall":
+      gpu.call("fmm3dbie_gpu", "freeall", {});
+      return RTV.tensor(new Float64Array(0), [0, 0]);
+    case "count":
+      return gpu.call("fmm3dbie_gpu", "count", {});
+    case "surface_create":
+      nargs(args, 7, "h = fmm3dbie_gpu('surface_create', norder, srcvals, zk, alpha, lam, ifinout)");
+      return surfaceCreate(args, nargout);
+    case "surface_apply":
+      nargs(args, 4, "v = fmm3dbie_gpu('surface_apply', h, kernel, sigma)");
+      return surfaceApply(args);
+    case "surface_solve":
+      if (args.length !== 6 && args.length !== 7 && args.length !== 8)
+        throw new RuntimeError("usage: [sigma, phi1, errs, rres] = fmm3dbie_gpu('surface_solve', h, rhs, eps_gmres, maxit, lam[, far, hfmm])");
+      return surfaceSolve(args, nargout);
+    case "surface_eval":
+      nargs(args, 5, "u = fmm3dbie_gpu('surface_eval', h, targ, sigma, phi1)");
+      return surfaceEval(args);
+    case "surface_compare_far": {
+      // testing: [d0 d1 d2 d4 d23 d5] = fmm3dbie_gpu('surface_compare_far', h, x, phi1, phi2, @hfmm3d)
+      var cid = realScalar(args[1], "h");
+      var cinfo = gpu.call("fmm3dbie_gpu", "surface_info", { id: cid });
+      var cgeo = gpu.call("fmm3dbie_gpu", "surface_farGeometry", { id: cid });
+      var d = importJS("_fmm3dbie_gpu_solve").comparePasses(cid, cinfo, cgeo, args[5], args.length > 6 ? realScalar(args[6], "eps") : 1e-9,
+        complexInterleaved(args[2], "x"), complexInterleaved(args[3], "phi1"), complexInterleaved(args[4], "phi2"));
+      return RTV.tensor(new Float64Array(d), [1, d.length]);
+    }
+    case "h3d_slp": {
+      nargs(args, 5, "pot = fmm3dbie_gpu('h3d_slp', zk, src, q, targ)");
+      var s = points(args[2], "src");
+      var id = create(realScalar(args[1], "zk"), s, null, points(args[4], "targ"));
+      try {
+        return apply(id, "slp", args[3]);
+      } finally {
+        free(id);
+      }
+    }
+  }
+  throw new RuntimeError("fmm3dbie_gpu: unknown command '" + cmd + "'");
 });
