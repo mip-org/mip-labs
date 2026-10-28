@@ -317,17 +317,8 @@ function dispatch(routine, a) {
   );
 }
 
-register({
-  resolve: function (argTypes, nargout) {
-    var outs = [];
-    for (var i = 0; i < Math.max(1, nargout); i++) outs.push({ kind: "unknown" });
-    return {
-      outputTypes: outs,
-      apply: function (args) {
-        var id = args.length > 0 && args[0] && args[0].kind === "char" ? args[0].value : "";
-        var out = dispatch(id.split("(")[0] || "this routine", args);
-        return nargout <= 1 ? out[0] : out.slice(0, nargout);
-      },
-    };
-  },
+register(function (args, nargout) {
+  var id = args.length > 0 && args[0] && args[0].kind === "char" ? args[0].value : "";
+  var out = dispatch(id.split("(")[0] || "this routine", args);
+  return nargout <= 1 ? out[0] : out.slice(0, nargout);
 });
